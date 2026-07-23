@@ -1,0 +1,34 @@
+#container-boxes {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #1a1a1a;
+}
+
+.box-style {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #070707;
+    color: white;
+    border: 1px solid #f7f8f7;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: sans-serif;
+    font-weight: bold;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    animation-name: dropAnim;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes dropAnim {
+    to {
+        top: 100vh;
+    }
+}
