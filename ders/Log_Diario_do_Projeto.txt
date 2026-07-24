@@ -2,4 +2,6 @@
                 Tambem foi iniciado a criação do script core do game que ficara de background desta mesma pagina desfocado.
 22-07-2026 - Adcionado os comentarios sobre a função core do projeto.
                 .
-23-07-2026 - META >> Concluir o core do Projeto e a tela inicial com "clique em qualquer botão" para ser jogado para a pagina Home.
+23-07-2026 - Concluido tela inicial com "clique em qualquer botão" para ser jogado para a pagina Home.
+                .
+24-07-2026 - META >> Concluir o core do Projeto e a tela home com os botoes de configuração e jogar estilizados.

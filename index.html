@@ -3,11 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
-    <link rel="stylesheet" href="./src/game/game.css"
+    <link rel="stylesheet" href="./src/game/game.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./src/game/game.js"></script>
     
     <style>
+        #film {
+            background-color: rgba(0, 0, 0, 0.1); /* Cor de fundo com transparência */
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px); /* Para navegadores baseados em WebKit */
+            position:absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 99; /* Certifique-se de que o filme esteja acima de outros elementos */
+
+            display: flex; /* Usando flexbox para centralizar o conteúdo */
+            justify-content: center;
+            align-items: center;
+            
+        }
+        #click {
+                background-color: #000000;
+                padding: 10px 20px;
+                color: #ffffff;
+                font-size: 16px;
+                cursor: pointer;
+                border-radius: 5px;
+                border: 2px solid #858080;
+
+                animation: click 3s infinite; /* Animação de pulsação */
+            }
+            @keyframes click {
+                    50% {opacity: 5%;} /*Fica invisivel no meio da animação*/
+                }
         body {
             background-color: #000000;
             margin: 0;
@@ -17,11 +47,45 @@
         }
     </style>
 </head>
-<body>
-    <div id="container-boxes">
-        <script>
-            the_game();
+<body id="body">
+    <div class="divs" id="container-boxes">
+        <script defer>
+            /*LISTA DAS DIVS DO DOCUMENTO*/
+            const divList = document.getElementsByClassName('divs');
+            /*DETERMINA POR PADRAO FALSE == NAO CLICOU AINDA*/
+            let clicked = false;
+            /*VERIFICA SE AINDA ESTA NA TELA INICIAL*/
+            function gameINbackground() {
+                if (!clicked) {
+                    the_game();
+                }
+            }
+            /*DETERMINA A VELOCIDADE DE REPRODUÇÃO E CRIA UM LOOP*/
+            setInterval(gameINbackground, 999);
+
+            /*FUNÇÃO PARA DESATIVAR O BACKGROUND*/
+            function toggleGame() {
+                clicked = !clicked;
+            }
+            /*MONITORA O CLICK DE QUALQUER TECLA*/
+            document.addEventListener('keydown', function(event) {
+                toggleGame();
+                alert('Você pressionou a tecla: ' + event.key);
+            });
+            document.addEventListener('click', function(event) {
+                alert('Você clicou na tela!');
+                toggleGame();
+                /*LOOP PARA ESCONDER TODAS AS DIVS*/
+                for (let i = 0; i < divList.length; i++) {
+                    divList[i].style.display = 'none';
+                }
+                /*REDIRECIONA PARA A PÁGINA HOME*/
+                window.location.replace('./src/home/home.html');
+            });
         </script>
+    </div>
+    <div class="divs" id="film">
+        <button id="click">Clique Qualquer Tecla</button>
     </div>
 </body>
 </html>
