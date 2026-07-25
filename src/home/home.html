@@ -5,10 +5,40 @@
   <link rel="stylesheet" href="../home/home.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="../home/home.js" defer></script>
+  <script src="../game/game.js" ></script>
   
   <title>Home</title>
 </head>
 <body>
-  <h1>Welcome</h1>
+  <h1>Datilo Game</h1>
+  <div id="container">
+    <div id="lefthDiv">
+      <div id="imageDiv">
+      </div>
+    </div>
+
+    <div id="middleDiv">
+      <button className="button" id="newGameButton">Novo Jogo
+        <script>
+          const newGameButton = document.getElementById("newGameButton");
+          newGameButton.addEventListener("click", function() {
+            window.location.href = "../preferences/preferences.html";
+          });
+        </script>
+      </button>
+      <button className="button" id="configButton">Configurações
+        <script>
+          const configButton = document.getElementById("configButton");
+          configButton.addEventListener("click", function() {
+            window.location.href = "../config/config.html";
+          });
+        </script>
+      </button>
+    </div>
+
+    <div id="rightDiv">
+      <div id="ranking">TOP RANKING</div>
+    </div>
+  </div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 function the_game(){
                 /*CAPTURA A DIV ONDE AS LETRAS SERAO CRIADAS*/
-                const container = document.getElementById('container-boxes');
+                const container = document.getElementById('gameDiv');
                 /*STRING CONTENDO O ALFABETO*/
                 list_lyrics = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 /*VELOCIDADE BASE DE QUEDA DOS BLOCOS*/

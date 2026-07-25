@@ -4,4 +4,6 @@
                 .
 23-07-2026 - Concluido tela inicial com "clique em qualquer botão" para ser jogado para a pagina Home.
                 .
-24-07-2026 - META >> Concluir o core do Projeto e a tela home com os botoes de configuração e jogar estilizados.
+24-07-2026 - Configurado tela home com os botoes de configuração e jogar estilizados com link para as paginas correspondentes.
+                .
+25-07-2026 - META >> Concluir o core do Projeto e a pagina preferences e game.

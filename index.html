@@ -48,7 +48,7 @@
     </style>
 </head>
 <body id="body">
-    <div class="divs" id="container-boxes">
+    <div class="divs" id="gameDiv">
         <script defer>
             /*LISTA DAS DIVS DO DOCUMENTO*/
             const divList = document.getElementsByClassName('divs');
@@ -70,10 +70,8 @@
             /*MONITORA O CLICK DE QUALQUER TECLA*/
             document.addEventListener('keydown', function(event) {
                 toggleGame();
-                alert('Você pressionou a tecla: ' + event.key);
             });
             document.addEventListener('click', function(event) {
-                alert('Você clicou na tela!');
                 toggleGame();
                 /*LOOP PARA ESCONDER TODAS AS DIVS*/
                 for (let i = 0; i < divList.length; i++) {
