@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-Br">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="./game.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./game.js"></script>
+    
+</head>
+<body id="body">
+    <div class="divs" id="gameDiv">
+        <script defer>
+            the_game();
+            setInterval(the_game, 1000);
+        </script>
+    </div>
+    <div class="divs" id="film">
+        <button id="click">Voltar Ao Inicio</button>
+        <script>
+            const filmWindow = document.getElementById("film")
+            filmWindow.style.display = "none"
+        </script>
+    </div>
+</body>
+</html>
