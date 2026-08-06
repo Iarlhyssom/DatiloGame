@@ -6,4 +6,6 @@
                 .
 24-07-2026 - Configurado tela home com os botoes de configuração e jogar estilizados com link para as paginas correspondentes.
                 .
-25-07-2026 - META >> Concluir o core do Projeto e a pagina preferences e game.
+05-08-2026 - Removido a possibilidade de letras sobreporem as outras na criação e iniciado a tela Game.
+                .
+06-08-2026 - Meta >> Concluir a tela Game.
