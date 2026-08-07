@@ -22,5 +22,21 @@
             filmWindow.style.display = "none"
         </script>
     </div>
+    <script defer>
+        let isVisibleList = []
+        observer()
+
+        function infoElements(){
+            let loteinGame = document.querySelectorAll('.box-style')
+            console.log("letras na tela - ",isVisibleList.length)
+            console.log("letras total - ",loteinGame.length)
+        }
+        /*setInterval (infoElements, 1000)*/
+        
+        document.addEventListener('keydown', function(clicked){
+            destroyer(clicked.key,isVisibleList)
+            console.log("clicou",clicked.key)
+        })
+    </script>
 </body>
 </html>

@@ -10,9 +10,11 @@ function the_game(){
     const height_background = window.innerHeight;
     let loteinGame = document.querySelectorAll('.box-style');
 
+    /*BLOCO QUE VERIFICA SE JA EXISTE LETRAS EM TELA */
     if (loteinGame.length == 0){
         construtor = true
     }
+    /*VERIFICA SE EXISTEM LETRAS NO SPAWN MAP*/
     else{
         let lotecheck = []
         for (let i = 0; i < loteinGame.length; i++){
@@ -23,6 +25,7 @@ function the_game(){
         construtor = lotecheck.every(item => item > 0);
     }
 
+    /*SO ATIVA SE NAO HOUVER LETRAS NO SPAWN MAP*/
     if (construtor == true){
         construtor = false;
         let positions = generate_spawnMap();
@@ -78,6 +81,7 @@ function the_game(){
     }
 };
 
+/*FUNCAO PARA CRIAR UMA ARRAY COM OBJETOS COORDENADAS*/
 function generate_spawnMap(){
     const windowHeight = window.innerHeight; /*Y*/
     const windowWidth = window.innerWidth;   /*X*/
@@ -94,7 +98,6 @@ function generate_spawnMap(){
             positions.push(position)
         }
     }
-
     /*console.log(contSpacesX)
     console.log(windowWidth)
     console.log(contSpacesY)
@@ -102,3 +105,41 @@ function generate_spawnMap(){
     console.log(positions)*/
     return positions
 };
+function observer() {
+    const windowHeight = window.innerHeight; /*Y*/
+    let loteinGame = document.querySelectorAll('.box-style')
+    let list = []
+    for (let i = 0; i < loteinGame.length; i++) {
+        let item = loteinGame[i]
+        let itemPosition = item.getBoundingClientRect()
+        let itemY = itemPosition.top
+        if (itemY > 0){
+            list.push(loteinGame[i])
+        }
+        if (itemY >= windowHeight) {
+            /*COMPARA O EL QUE SAO OBJETOS SALVOS DENTRO DE LIST COM O ITEM E O ELIMINA SE IGUAL*/
+            list = list.filter(el => el !== item);
+            item.remove();
+        }
+    }
+
+    isVisibleList = list;
+    setTimeout(observer, 1000)
+}
+function destroyer(key,list) {
+    key = key.toUpperCase()
+    let itens = list.filter(el => el.textContent === key)
+    if (itens.length === 0) return null 
+    let positions = []
+    for (let i = 0; i < itens.length; i++){
+        let item = itens[i]
+        let itemPosition = item.getBoundingClientRect()
+        let itemY = itemPosition.top
+        positions.push({itemY,item})
+    }
+    /*NAO FAÇO IDEIA DE COMO FUNCIONA*/
+    /*PEGA O MAIOR VALOR NA LISTA POSITIONS*/
+    let target = positions.reduce((max, atual) => atual.itemY > max.itemY ? atual : max)
+    console.log("target ",target)
+    target.item.remove();
+}
