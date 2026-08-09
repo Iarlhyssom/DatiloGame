@@ -1,4 +1,4 @@
-import { the_game } from '../game/game.js';
+import { theConstrutor } from '../game/game.js';
 
 const audioContext = new AudioContext();
 const audioElement = document.getElementById('player');
@@ -79,7 +79,7 @@ function checarRitmo() {
     contFrames++;
     
     if (contFrames >= 240){
-        the_game(hitvalor);
+        theConstrutor(hitvalor);
         contFrames = 0;
     }
 }

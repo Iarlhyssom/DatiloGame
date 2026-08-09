@@ -1,4 +1,17 @@
-export function the_game(hitvalor){
+const elementFilm = document.querySelector('#film')
+const elementEndScore = document.querySelector('#film #endScore')
+const elementGameUi = document.querySelector('#gameUI')
+const elementLife = document.querySelector('.hud-item #life_points')
+const elementScore = document.querySelector('.hud-item #score')
+const elementCombo = document.querySelector('.hud-item #combo')
+
+let life = 1
+elementLife.innerText = life
+
+let score = elementScore.innerText
+let combo = elementCombo.innerText
+
+export function theConstrutor(hitvalor){
     let construtor = true
     /*CAPTURA A DIV ONDE AS LETRAS SERAO CRIADAS*/
     const container = document.getElementById('gameDiv');
@@ -123,6 +136,13 @@ export function observer() {
             /*COMPARA O EL QUE SAO OBJETOS SALVOS DENTRO DE LIST COM O ITEM E O ELIMINA SE IGUAL*/
             list = list.filter(el => el !== item);
             item.remove();
+            life--
+            elementLife.innerText = life
+            if (life <= 0){
+                elementEndScore.innerText = score
+                elementFilm.style.display = "flex"
+                elementGameUi.style.display = "none"
+            }
         }
     }
 
@@ -146,4 +166,5 @@ export function destroyer(key,list) {
     let target = positions.reduce((max, atual) => atual.itemY > max.itemY ? atual : max)
     console.log("target ",target)
     target.item.remove();
+    elementScore.innerText = score++
 }

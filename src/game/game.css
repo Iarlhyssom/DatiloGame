@@ -39,8 +39,10 @@
     z-index: 99; /* Certifique-se de que o filme esteja acima de outros elementos */
 
     display: none; /* Usando flexbox para centralizar o conteúdo */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 10px;
     
 }
 
@@ -73,4 +75,30 @@ body {
     padding: 20px;
     box-sizing: border-box;
     color: white;
+}
+
+#comboUi {
+    display: none;
+}
+
+#click {
+    background-color: #000000;
+    padding: 10px 20px;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 2px solid #858080;
+
+    /*animation: click 3s infinite; /* Animação de pulsação */
+}
+
+#endScoreUi {
+    background-color: #000000;
+    padding: 10px 20px;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 2px solid #858080;
 }

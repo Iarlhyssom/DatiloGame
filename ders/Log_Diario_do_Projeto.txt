@@ -10,5 +10,8 @@
                 .
 06-08-2026 - Adcionada a parte estetica da janela preferences, com a funcionalidade do botao play.
                 Criada a mecanica de destruir as letras em tela.
-07-08-2026 - Meta >> Adicionar UI na janela Game e trabalhar em dificuldades de acordo com score.
-                Nota - UI com Score / Life / Combo
+08-08-2026 - Criada a mecanica de dificuldade de acordo com a musica, mas ainda incompleta.
+                .
+08-08-2026 - Adcionada a possibilidade de derrota, ui inicial do game (score/life).
+                Feitas algumas alteracoes para adptar o projeto para rodar no github pages.
+

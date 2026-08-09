@@ -21,3 +21,9 @@ document.addEventListener('keydown', function(clicked) {
     console.log(isVisibleList)
     destroyer(clicked.key, isVisibleList);
 });
+
+const elementButton = document.querySelector('#film #click')
+elementButton.addEventListener('click', function(event) {
+    /*REDIRECIONA PARA A PÁGINA HOME*/
+    window.location.replace('../home/index.html');
+});
