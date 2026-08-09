@@ -5,7 +5,7 @@ const elementLife = document.querySelector('.hud-item #life_points')
 const elementScore = document.querySelector('.hud-item #score')
 const elementCombo = document.querySelector('.hud-item #combo')
 
-let life = 1
+let life = 100
 elementLife.innerText = life
 
 let score = elementScore.innerText
