@@ -2,41 +2,28 @@
 <html lang="pt-Br">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>DatiloGame</title>
     <link rel="stylesheet" href="./game.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./game.js"></script>
-    
 </head>
 <body id="body">
+    
+    <audio id="player"></audio>
+    
     <div class="divs" id="gameDiv">
-        <script defer>
-            the_game();
-            setInterval(the_game, 1000);
-        </script>
+        <!-- As letras vão nascer aqui dentro -->
     </div>
+
     <div class="divs" id="film">
         <button id="click">Voltar Ao Inicio</button>
-        <script>
-            const filmWindow = document.getElementById("film")
-            filmWindow.style.display = "none"
-        </script>
     </div>
-    <script defer>
-        let isVisibleList = []
-        observer()
+    <div id="gameUI">
+        <div class="hud-item">Pontos: <span id="score">0</span></div>
+        <div class="hud-item">Life: <span id="ritmo-tela">0</span></div>
+    </div>
 
-        function infoElements(){
-            let loteinGame = document.querySelectorAll('.box-style')
-            console.log("letras na tela - ",isVisibleList.length)
-            console.log("letras total - ",loteinGame.length)
-        }
-        /*setInterval (infoElements, 1000)*/
-        
-        document.addEventListener('keydown', function(clicked){
-            destroyer(clicked.key,isVisibleList)
-            console.log("clicou",clicked.key)
-        })
-    </script>
+    <!-- O ÚNICO SCRIPT: Ele vai controlar o jogo todo nos bastidores -->
+    <script type="module" src="./app.js"></script>
+
 </body>
 </html>

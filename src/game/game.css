@@ -38,7 +38,7 @@
     height: 100%;
     z-index: 99; /* Certifique-se de que o filme esteja acima de outros elementos */
 
-    display: flex; /* Usando flexbox para centralizar o conteúdo */
+    display: none; /* Usando flexbox para centralizar o conteúdo */
     justify-content: center;
     align-items: center;
     
@@ -56,4 +56,21 @@ body {
     to {
         top: 100vh;
     }
+}
+
+#gameUI {
+    display: flex;
+    flex-direction: column; 
+    gap: 15px; 
+    align-items: flex-end;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    padding: 20px;
+    box-sizing: border-box;
+    color: white;
 }

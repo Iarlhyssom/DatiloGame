@@ -8,4 +8,7 @@
                 .
 05-08-2026 - Removido a possibilidade de letras sobreporem as outras na criação e iniciado a tela Game.
                 .
-06-08-2026 - Meta >> Concluir a tela Game.
+06-08-2026 - Adcionada a parte estetica da janela preferences, com a funcionalidade do botao play.
+                Criada a mecanica de destruir as letras em tela.
+07-08-2026 - Meta >> Adicionar UI na janela Game e trabalhar em dificuldades de acordo com score.
+                Nota - UI com Score / Life / Combo

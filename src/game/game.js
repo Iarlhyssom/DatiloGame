@@ -1,9 +1,9 @@
-function the_game(){
+export function the_game(hitvalor){
     let construtor = true
     /*CAPTURA A DIV ONDE AS LETRAS SERAO CRIADAS*/
     const container = document.getElementById('gameDiv');
     /*STRING CONTENDO O ALFABETO*/
-    list_lyrics = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    const list_lyrics = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     /*VELOCIDADE BASE DE QUEDA DOS BLOCOS*/
     const velocity_pxS = 120;
     /*MEDE A ALTURA TOTAL DA JANELA*/
@@ -29,23 +29,24 @@ function the_game(){
     if (construtor == true){
         construtor = false;
         let positions = generate_spawnMap();
+        console.log("construtor ",hitvalor)
 
         /*LOOP DE CRIAÇÃO DOS BLOCOS DE LETRAS E ANIMAÇÃO*/
-        for (let i = 0; i < list_lyrics.length; i++){
+        for (let i = 0; i < hitvalor; i++){
             /*CRIA UMA NOVA TAG DIV NA MEMORIA DA MAQUINA*/
             const novoBox = document.createElement('div');
             /*SORTEIA UM NUMERO BASEADO NA LISTA*/
-            target_index = Math.floor(Math.random()*list_lyrics.length);
+            let target_index = Math.floor(Math.random()*list_lyrics.length);
             /*PEGA A LETRA CORRESPONDENTE AO NUMERO SORTEADO*/
-            target_lyric = list_lyrics[target_index];
+            let target_lyric = list_lyrics[target_index];
             
             /*INSERE A LETRA SORTEADA NO ELEMENTO*/
             novoBox.textContent = target_lyric;
             /*APLICA O ESTILO AO ELEMENTO*/
             novoBox.classList.add('box-style');
             
-            position_index = Math.floor(Math.random()*positions.length);
-            target_position = positions[position_index];
+            let position_index = Math.floor(Math.random()*positions.length);
+            let target_position = positions[position_index];
             /*console.log(position_index+" index");
             console.log(positions.length+" array length");
             console.log(target_position+" Tg Position");*/
@@ -77,6 +78,7 @@ function the_game(){
         /*console.log(positions.length+" array cont final")*/
         positions = []
         loteinGame = document.querySelectorAll('.box-style');
+        hitvalor = 0;
 
     }
 };
@@ -105,7 +107,8 @@ function generate_spawnMap(){
     console.log(positions)*/
     return positions
 };
-function observer() {
+export let isVisibleList = []
+export function observer() {
     const windowHeight = window.innerHeight; /*Y*/
     let loteinGame = document.querySelectorAll('.box-style')
     let list = []
@@ -123,10 +126,11 @@ function observer() {
         }
     }
 
-    isVisibleList = list;
+    isVisibleList.length = 0;
+    isVisibleList.push(...list);
     setTimeout(observer, 1000)
 }
-function destroyer(key,list) {
+export function destroyer(key,list) {
     key = key.toUpperCase()
     let itens = list.filter(el => el.textContent === key)
     if (itens.length === 0) return null 
