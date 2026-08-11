@@ -21,7 +21,6 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 export async function player(playlist) {    
     //Ativa o áudio e o loop de ritmo antes do loop das músicas
     await audioContext.resume();
-    checarRitmo(); 
     console.log("funcao player on")
 
     for (let i = 0; i < playlist.length; i++) {
@@ -59,31 +58,4 @@ export async function carregarPlaylist() {
     const local = await fetch(urlJson);
     const playlist = await local.json();
     return playlist;
-}
-
-let contFrames = 0;
-function checarRitmo() {
-    
-    requestAnimationFrame(checarRitmo); 
-    
-    analyser.getByteFrequencyData(dados); 
-
-    //Reseta o valor a cada frame para não acumular infinitamente
-    hitvalor = 0; 
-
-    for (let i = 0; i < dados.length; i++) {
-        hitvalor = hitvalor + dados[i];
-    }
-
-    hitvalor = Math.floor(hitvalor / 255);
-    hitvalor = Math.floor(hitvalor * 100);
-    hitvalor = Math.floor(hitvalor / 100);
-    hitvalor = Math.floor(hitvalor * 26);
-    hitvalor = Math.floor(hitvalor / 8);
-    contFrames++;
-    
-    if (contFrames >= 240){
-        theConstrutor(hitvalor);
-        contFrames = 0;
-    }
 }

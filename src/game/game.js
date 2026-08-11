@@ -5,19 +5,19 @@ const elementLife = document.querySelector('.hud-item #life_points')
 const elementScore = document.querySelector('.hud-item #score')
 const elementCombo = document.querySelector('.hud-item #combo')
 
-let life = 1
+let life = 100
 let combo = 0
 let score = 0
 
-
-export function theConstrutor(hitvalor,mode){
+export function theConstrutor(mode,dificultNumber,velocity){
+    let dificult = dificultNumber
     let construtor = true
     /*CAPTURA A DIV ONDE AS LETRAS SERAO CRIADAS*/
     const container = document.getElementById('gameDiv');
     /*STRING CONTENDO O ALFABETO*/
     const list_lyrics = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     /*VELOCIDADE BASE DE QUEDA DOS BLOCOS*/
-    const velocity_pxS = 120;
+    const velocity_pxS = velocity;
     /*MEDE A ALTURA TOTAL DA JANELA*/
     const height_background = window.innerHeight;
     let loteinGame = document.querySelectorAll('.box-style');
@@ -43,7 +43,7 @@ export function theConstrutor(hitvalor,mode){
         let positions = generate_spawnMap();
 
         /*LOOP DE CRIAÇÃO DOS BLOCOS DE LETRAS E ANIMAÇÃO*/
-        for (let i = 0; i < hitvalor; i++){
+        for (let i = 0; i < dificultNumber; i++){
             /*CRIA UMA NOVA TAG DIV NA MEMORIA DA MAQUINA*/
             const novoBox = document.createElement('div');
             /*SORTEIA UM NUMERO BASEADO NA LISTA*/
@@ -85,9 +85,14 @@ export function theConstrutor(hitvalor,mode){
         };
         positions = []
         loteinGame = document.querySelectorAll('.box-style');
-        hitvalor = 0;
 
     }
+
+    let var_Atualizadas = [10,120];
+    if (mode === "game") {
+        var_Atualizadas = newDificult(dificult,velocity_pxS,score);
+    }
+    requestAnimationFrame(() => theConstrutor(mode,var_Atualizadas[0], var_Atualizadas[1]));
 };
 
 /*FUNCAO PARA CRIAR UMA ARRAY COM OBJETOS COORDENADAS*/
@@ -158,5 +163,35 @@ export function destroyer(key,list) {
     /*PEGA O MAIOR VALOR NA LISTA POSITIONS*/
     let target = positions.reduce((max, atual) => atual.itemY > max.itemY ? atual : max);
     target.item.remove();
+    console.log("aqui 1")
     elementScore.innerText = score++
+    console.log("aqui 2")
+}
+
+/* Função para regular a dificuldade ao longo do jogo - FACIL / NORMAL */
+export function newDificult(dif,vpx,sco) { /*dificuldade, velocidade px/s, score atual*/
+    dif = parseInt(dif,10);
+    vpx = parseInt(vpx,10);
+    sco = parseInt(sco,10);
+
+    let valor = 0;
+    let dificulLimit = 100;
+    let scoreLimit = 500;
+    if (sco === 0 || sco == null){
+        return [10, 120]
+    }
+    else if (sco >= 50 && sco < scoreLimit) {
+        let difRestante = dificulLimit - dif;
+        let scoRestante = scoreLimit - sco;
+        if (scoRestante > 0 && difRestante > 0) {
+            valor = difRestante / scoRestante; 
+        }
+    }
+    else if (sco >= scoreLimit) {
+        valor = 0
+    }
+    dif = dif + valor;
+    vpx = vpx + valor;
+    console.log(valor," dificuldade atualizada ",dif,"dif // ",vpx,"pxs");
+    return [dif, vpx];
 }

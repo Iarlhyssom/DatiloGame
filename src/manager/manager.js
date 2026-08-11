@@ -138,7 +138,7 @@ function janelaConfig(command){
 
 function gameINbackground() {
     if (!clicked) {
-        theConstrutor(26);
+        theConstrutor("static",26,150);
     }
 }
 
@@ -148,7 +148,6 @@ function toggleGame() {
 
 //* Escondendo todos os elementos *//
 hideElements(bodyArray);
-console.log(jiElements)
 
 //* Janela Inicial *//
 janelaInicial('show')

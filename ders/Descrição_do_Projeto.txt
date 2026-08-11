@@ -33,5 +33,5 @@ Descrição do projeto:
 Diferencial do Projeto:
 
     O maior ponto forte do projeto devera ser o cenario e a possibilidade de personalização do mesmo.
-    Assim como a integração das playlists locais.
+    Assim como a integração das playlists locais personalizaveis.
     
