@@ -14,4 +14,5 @@
                 .
 08-08-2026 - Adcionada a possibilidade de derrota, ui inicial do game (score/life).
                 Feitas algumas alteracoes para adptar o projeto para rodar no github pages.
-
+11-08-2026 - Altareda a forma com que a navegação é feita, de janelas para "divs de janelas", mantendo somente o html inicial e o html do game.
+                .

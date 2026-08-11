@@ -1,17 +1,16 @@
-const elementFilm = document.querySelector('#film')
-const elementEndScore = document.querySelector('#film #endScore')
+const elementFilm = document.querySelector('#tg_film')
+const elementEndScore = document.querySelector('#tg_film #endScore')
 const elementGameUi = document.querySelector('#gameUI')
 const elementLife = document.querySelector('.hud-item #life_points')
 const elementScore = document.querySelector('.hud-item #score')
 const elementCombo = document.querySelector('.hud-item #combo')
 
-let life = 100
-elementLife.innerText = life
+let life = 1
+let combo = 0
+let score = 0
 
-let score = elementScore.innerText
-let combo = elementCombo.innerText
 
-export function theConstrutor(hitvalor){
+export function theConstrutor(hitvalor,mode){
     let construtor = true
     /*CAPTURA A DIV ONDE AS LETRAS SERAO CRIADAS*/
     const container = document.getElementById('gameDiv');
@@ -42,7 +41,6 @@ export function theConstrutor(hitvalor){
     if (construtor == true){
         construtor = false;
         let positions = generate_spawnMap();
-        console.log("construtor ",hitvalor)
 
         /*LOOP DE CRIAÇÃO DOS BLOCOS DE LETRAS E ANIMAÇÃO*/
         for (let i = 0; i < hitvalor; i++){
@@ -60,9 +58,6 @@ export function theConstrutor(hitvalor){
             
             let position_index = Math.floor(Math.random()*positions.length);
             let target_position = positions[position_index];
-            /*console.log(position_index+" index");
-            console.log(positions.length+" array length");
-            console.log(target_position+" Tg Position");*/
 
             /*POSIÇÃO HORIZONTAL ALEATORIA DENTRO DA JANELA*/
             let posX = target_position["x"];
@@ -88,7 +83,6 @@ export function theConstrutor(hitvalor){
             container.appendChild(novoBox);
             positions.splice(position_index,1);
         };
-        /*console.log(positions.length+" array cont final")*/
         positions = []
         loteinGame = document.querySelectorAll('.box-style');
         hitvalor = 0;
@@ -113,18 +107,15 @@ function generate_spawnMap(){
             positions.push(position)
         }
     }
-    /*console.log(contSpacesX)
-    console.log(windowWidth)
-    console.log(contSpacesY)
-    console.log(windowHeight)
-    console.log(positions)*/
     return positions
 };
 export let isVisibleList = []
-export function observer() {
+export function observer(mode) {
+    if (!elementLife) {return};
     const windowHeight = window.innerHeight; /*Y*/
     let loteinGame = document.querySelectorAll('.box-style')
     let list = []
+    elementLife.innerText = life
     for (let i = 0; i < loteinGame.length; i++) {
         let item = loteinGame[i]
         let itemPosition = item.getBoundingClientRect()
@@ -135,10 +126,12 @@ export function observer() {
         if (itemY >= windowHeight) {
             /*COMPARA O EL QUE SAO OBJETOS SALVOS DENTRO DE LIST COM O ITEM E O ELIMINA SE IGUAL*/
             list = list.filter(el => el !== item);
-            item.remove();
-            life--
-            elementLife.innerText = life
-            if (life <= 0){
+            if (mode === "game") {
+                item.remove();
+                life--
+                elementLife.innerText = life
+            }
+            if (life <= 0 && mode === "game"){
                 elementEndScore.innerText = score
                 elementFilm.style.display = "flex"
                 elementGameUi.style.display = "none"
@@ -148,12 +141,12 @@ export function observer() {
 
     isVisibleList.length = 0;
     isVisibleList.push(...list);
-    setTimeout(observer, 1000)
+    requestAnimationFrame(() => observer(mode));
 }
 export function destroyer(key,list) {
     key = key.toUpperCase()
     let itens = list.filter(el => el.textContent === key)
-    if (itens.length === 0) return null 
+    if (itens.length === 0) {return null} 
     let positions = []
     for (let i = 0; i < itens.length; i++){
         let item = itens[i]
@@ -163,8 +156,7 @@ export function destroyer(key,list) {
     }
     /*NAO FAÇO IDEIA DE COMO FUNCIONA*/
     /*PEGA O MAIOR VALOR NA LISTA POSITIONS*/
-    let target = positions.reduce((max, atual) => atual.itemY > max.itemY ? atual : max)
-    console.log("target ",target)
+    let target = positions.reduce((max, atual) => atual.itemY > max.itemY ? atual : max);
     target.item.remove();
     elementScore.innerText = score++
 }

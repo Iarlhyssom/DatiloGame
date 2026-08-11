@@ -4,7 +4,7 @@ import { player, carregarPlaylist } from "../music/player.js";
 //função para rodar o fluxo assíncrono
 async function inicializar() {
     // Inicia o sistema que limpa as letras da tela
-    observer();
+    observer("game");
 
     // Aguarda a playlist ser carregada do JSON antes de entregar ao player
     const playlistReal = await carregarPlaylist();
@@ -22,8 +22,8 @@ document.addEventListener('keydown', function(clicked) {
     destroyer(clicked.key, isVisibleList);
 });
 
-const elementButton = document.querySelector('#film #click')
+const elementButton = document.querySelector('#tg_film #click')
 elementButton.addEventListener('click', function(event) {
     /*REDIRECIONA PARA A PÁGINA HOME*/
-    window.location.replace('../home/index.html');
+    window.location.replace('../../test.html');
 });

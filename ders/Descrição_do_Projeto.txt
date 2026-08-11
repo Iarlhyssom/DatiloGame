@@ -26,15 +26,12 @@ Descrição do projeto:
         De acordo com a quantidade de letras a velocidade de queda aumenta e a quantidade tambem.
         Coisas começam a aparecer na tela de acordo com o score do jogador ou sua sequencia de acertos
         Quando a velocidade de queda chegar a 2x da velocidade original o cenario muda de cor e assim para toda vez que
-            o a velocidade dobrar.
-        Por fim assim que o jogador perder surgira uma tela de Game over com seu score e tempo da partida.
+            a velocidade dobrar.
+        Por fim assim que o jogador perder surgira uma tela de Game over com seu score, teclas/s e tempo da partida.
         Com um botão que o leva de volta para a tela inicial.
-        Caso o jogador conclua o tempo estipulado ou o limite de velocidade possivel de ser ganha.
-        Aparecera uma tela de "Congradulations" informando e elogiando a habilidade de digitação do mesmo.
-        Assim voltando a tela inicial.
 
 Diferencial do Projeto:
 
     O maior ponto forte do projeto devera ser o cenario e a possibilidade de personalização do mesmo.
-    Assim como a integração das playlists locais que a muito foram substituidas por plataformas online.
+    Assim como a integração das playlists locais.
     

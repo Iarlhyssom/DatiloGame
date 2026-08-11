@@ -29,10 +29,14 @@ export async function player(playlist) {
         
         //Ajustado para playlist[i] para avançar as músicas do array
         audioElement.src = playlist[i].local;
-        
         audioElement.load();
-        audioElement.play();
-
+        
+        try {
+            audioElement.play();
+        } catch (error){
+            console.warn("Autoplay bloqueado", error);
+        }
+        
         console.log(`Tocando agora: ${playlist[i].local}`);
 
         //impede que o 'for' pule para a próxima música em 1 milissegundo
