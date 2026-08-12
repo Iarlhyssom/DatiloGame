@@ -10,7 +10,7 @@ const jiElements = document.getElementsByClassName('ji_element'); /* Array de El
 const jhContainer = document.getElementById("janela_home")
 const jhElements = document.getElementsByClassName("jh_element")
 const jhButton00 = document.getElementById("newGameButton")
-const jhButton01 = document.getElementById("prefGameButton")
+const jhButton01 = document.getElementById("temaGameButton")
 const jhButton02 = document.getElementById("configButton")
 
 const jpContainer = document.getElementById("janela_pref")
@@ -22,6 +22,11 @@ const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
 const cgButtonSave = document.getElementById("cg_buttonSave")
 const cgButtonBack = document.getElementById("cg_buttonBack")
+
+const tmContainer = document.getElementById("janela_tema")
+const tmElements = document.getElementsByClassName("tm_element")
+const tmButtonSave = document.getElementById("tm_buttonSave")
+const tmButtonBack = document.getElementById("tm_buttonBack")
 
 
 const buttonPlay = document.getElementById("play_button"); /* PREFS */
@@ -69,14 +74,13 @@ function janelaHome(command){
         showElements(jhElements);
         jhContainer.style.display = "flex"
         jhButton00.addEventListener('click', function(event) {
-            janelaHome("hide")
-            window.location.replace('./src/game/')
-        });
-        jhButton01.addEventListener('click', function(event) {
             janelaPref("show")
         });
+        jhButton01.addEventListener('click', function(event) {
+            //janelaTema("show")
+        });
         jhButton02.addEventListener('click', function(event) {
-            janelaConfig("show")
+            //janelaConfig("show")
         });
     }
     else if (command === "hide") {
@@ -92,16 +96,22 @@ function janelaPref(command){
     if (command === "show") {
         jpContainer.style.display = "flex"
         jpContainer.style.zIndex = "99"
-        
+
         showElements(jpElements);
         jpButton00.addEventListener('click', function(event) {
-            /*Not Funtional */
             janelaPref("hide")
+            janelaHome("hide")
+            window.location.replace('./src/game/')
         });
         jpButton01.addEventListener('click', function(event) {
             /*Not Funtional */
             janelaPref("hide")
         });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                janelaPref("hide")
+            }
+        })
     }
     else if (command === "hide") {
         hideElements(jpElements);
@@ -126,6 +136,11 @@ function janelaConfig(command){
             /*Not Funtional */
             janelaConfig("hide")
         });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                janelaConfig("hide")
+            }
+        })
     }
     else if (command === "hide") {
         hideElements(cgElements);
@@ -133,6 +148,35 @@ function janelaConfig(command){
     }
     else {
         console.log(`func janelaConfig >> commando string ${command} desconhecido`)
+    }
+}
+
+function janelaTema(command){
+    if (command === "show") {
+        tmContainer.style.display = "flex"
+        tmContainer.style.zIndex = "99"
+        
+        showElements(tmElements);
+        tmButtonSave.addEventListener('click', function(event) {
+            /*Not Funtional */
+            janelaTema("hide")
+        });
+        tmButtonBack.addEventListener('click', function(event) {
+            /*Not Funtional */
+            janelaTema("hide")
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                janelaTema("hide")
+            }
+        })
+    }
+    else if (command === "hide") {
+        hideElements(tmElements);
+        tmContainer.style.display = "none"
+    }
+    else {
+        console.log(`func janelaTema >> commando string ${command} desconhecido`)
     }
 }
 
@@ -145,9 +189,6 @@ function gameINbackground() {
 function toggleGame() {
     clicked = !clicked;
 }
-
-//* Escondendo todos os elementos *//
-hideElements(bodyArray);
 
 //* Janela Inicial *//
 janelaInicial('show')

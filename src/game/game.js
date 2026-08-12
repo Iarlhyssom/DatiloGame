@@ -4,6 +4,7 @@ const elementGameUi = document.querySelector('#gameUI')
 const elementLife = document.querySelector('.hud-item #life_points')
 const elementScore = document.querySelector('.hud-item #score')
 const elementCombo = document.querySelector('.hud-item #combo')
+const elementGameDiv = document.querySelector('#gameDiv')
 
 let life = 100
 let combo = 0
@@ -15,11 +16,11 @@ export function theConstrutor(mode,dificultNumber,velocity){
     /*CAPTURA A DIV ONDE AS LETRAS SERAO CRIADAS*/
     const container = document.getElementById('gameDiv');
     /*STRING CONTENDO O ALFABETO*/
-    const list_lyrics = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    const list_lyrics = "ABCÇDEFGHIJKLMNOPQRSTUVWXYZ"
     /*VELOCIDADE BASE DE QUEDA DOS BLOCOS*/
     const velocity_pxS = velocity;
     /*MEDE A ALTURA TOTAL DA JANELA*/
-    const height_background = window.innerHeight;
+    const height_background = mode === "game" ? container.clientHeight : window.innerHeight;
     let loteinGame = document.querySelectorAll('.box-style');
 
     /*BLOCO QUE VERIFICA SE JA EXISTE LETRAS EM TELA */
@@ -40,13 +41,13 @@ export function theConstrutor(mode,dificultNumber,velocity){
     /*SO ATIVA SE NAO HOUVER LETRAS NO SPAWN MAP*/
     if (construtor == true){
         construtor = false;
-        let positions = generate_spawnMap();
+        let positions = generate_spawnMap(mode);
 
         /*LOOP DE CRIAÇÃO DOS BLOCOS DE LETRAS E ANIMAÇÃO*/
         for (let i = 0; i < dificultNumber; i++){
             /*CRIA UMA NOVA TAG DIV NA MEMORIA DA MAQUINA*/
             const novoBox = document.createElement('div');
-            /*SORTEIA UM NUMERO BASEADO NA LISTA*/
+            /*SORTEIA UM NUMERO BASEADO EM LIST_LYRICS.LENGTH*/
             let target_index = Math.floor(Math.random()*list_lyrics.length);
             /*PEGA A LETRA CORRESPONDENTE AO NUMERO SORTEADO*/
             let target_lyric = list_lyrics[target_index];
@@ -56,6 +57,7 @@ export function theConstrutor(mode,dificultNumber,velocity){
             /*APLICA O ESTILO AO ELEMENTO*/
             novoBox.classList.add('box-style');
             
+            /*SORTEIA UM NUMERO BASEADO EM POSITIONS.LENGTH*/
             let position_index = Math.floor(Math.random()*positions.length);
             let target_position = positions[position_index];
 
@@ -72,7 +74,8 @@ export function theConstrutor(mode,dificultNumber,velocity){
             novoBox.style.top = posY + 'px';
 
             /*CALCULA A DISTANCIA REAL EM PIXELS DA POSIÇÃO Y DO ELEMENTO ATE O FINAL DA TELA VISIVEL*/
-            let space_down = height_background - posY;
+            const targetY = height_background - 36;
+            let space_down = Math.abs(posY) + targetY;
             /*CALCULA O TEMPO DE QUEDA BASEADA NA DISTANCIA*/
             let timeDrop = space_down / velocity_pxS;
 
@@ -96,18 +99,25 @@ export function theConstrutor(mode,dificultNumber,velocity){
 };
 
 /*FUNCAO PARA CRIAR UMA ARRAY COM OBJETOS COORDENADAS*/
-function generate_spawnMap(){
-    const windowHeight = window.innerHeight; /*Y*/
-    const windowWidth = window.innerWidth;   /*X*/
-    const boxSize = {"x":60,"y":60}
+function generate_spawnMap(mode){
+    const containerWidth = mode === "game" ? elementGameDiv.clientWidth : window.innerWidth;
+    const containerHeight = mode === "game" ? elementGameDiv.clientHeight : window.innerHeight;
+    const boxSize = {"x":36,"y":36}
     const positions = []
-    let contSpacesX = windowWidth / boxSize["x"]
-    let contSpacesY = Math.floor(windowHeight / boxSize["y"])
+
+    let contSpacesX = Math.floor(containerWidth / boxSize["x"] - 1)
+    contSpacesX = Math.max(1, contSpacesX);
+
+    let contSpacesY = Math.floor(containerHeight / boxSize["y"])
+    let sobraLargura = containerWidth - (contSpacesX * boxSize["x"]);
+    let offset = Math.floor(sobraLargura / 2);
+
     
-    for (let c = 0; c < contSpacesX; c++){
-        let sortX = c * 60
-        for (let r = 1; r < contSpacesX; r++){
-            let sortY = (r * 60)*-1
+    
+    for (let c = 0; c <= contSpacesX; c++){
+        let sortX = offset + (c * 36)
+        for (let r = 1; r <= contSpacesX; r++){
+            let sortY = (r * 36)*-1
             let position = {"x":sortX,"y":sortY}
             positions.push(position)
         }
@@ -116,30 +126,39 @@ function generate_spawnMap(){
 };
 export let isVisibleList = []
 export function observer(mode) {
-    if (!elementLife) {return};
-    const windowHeight = window.innerHeight; /*Y*/
-    let loteinGame = document.querySelectorAll('.box-style')
-    let list = []
-    elementLife.innerText = life
+    // 1. Trava de segurança
+    if (!elementLife || !elementGameDiv) return;
+
+    // 2. Medição da borda inferior exata no monitor (rodada apenas 1 vez)
+    const gameDivRect = elementGameDiv.getBoundingClientRect();
+    const limitY = mode === "game" ? gameDivRect.bottom : window.innerHeight;
+
+    let loteinGame = document.querySelectorAll('.box-style');
+    let list = [];
+    elementLife.innerText = life;
+
     for (let i = 0; i < loteinGame.length; i++) {
-        let item = loteinGame[i]
-        let itemPosition = item.getBoundingClientRect()
-        let itemY = itemPosition.top
-        if (itemY > 0){
-            list.push(loteinGame[i])
+        let item = loteinGame[i];
+        let itemPosition = item.getBoundingClientRect();
+
+        if (itemPosition.top > 0) {
+            list.push(item);
         }
-        if (itemY >= windowHeight) {
-            /*COMPARA O EL QUE SAO OBJETOS SALVOS DENTRO DE LIST COM O ITEM E O ELIMINA SE IGUAL*/
+
+        // 3. Checagem de impacto na base do gameDiv
+        if (itemPosition.bottom >= limitY) {
             list = list.filter(el => el !== item);
+
             if (mode === "game") {
                 item.remove();
-                life--
-                elementLife.innerText = life
+                life--;
+                elementLife.innerText = life;
             }
-            if (life <= 0 && mode === "game"){
-                elementEndScore.innerText = score
-                elementFilm.style.display = "flex"
-                elementGameUi.style.display = "none"
+
+            if (life <= 0 && mode === "game") {
+                elementEndScore.innerText = score;
+                elementFilm.style.display = "flex";
+                elementGameUi.style.display = "none";
             }
         }
     }
@@ -163,9 +182,7 @@ export function destroyer(key,list) {
     /*PEGA O MAIOR VALOR NA LISTA POSITIONS*/
     let target = positions.reduce((max, atual) => atual.itemY > max.itemY ? atual : max);
     target.item.remove();
-    console.log("aqui 1")
     elementScore.innerText = score++
-    console.log("aqui 2")
 }
 
 /* Função para regular a dificuldade ao longo do jogo - FACIL / NORMAL */
