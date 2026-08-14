@@ -1,5 +1,6 @@
 //* Area de importação *//
 import { observer, isVisibleList, theConstrutor } from "../game/game.js";
+import {writerLocal, readLocal} from "./writer.js"
 
 //* Area de variaveis de elementos *//
 const bodyArray = document.getElementsByClassName("windowDiv") /* Array com as Janelas do Index */
@@ -10,11 +11,12 @@ const jiElements = document.getElementsByClassName('ji_element'); /* Array de El
 const jhContainer = document.getElementById("janela_home")
 const jhElements = document.getElementsByClassName("jh_element")
 const jhButton00 = document.getElementById("newGameButton")
-const jhButton01 = document.getElementById("temaGameButton")
+const jhButton01 = document.getElementById("persoGameButton")
 const jhButton02 = document.getElementById("configButton")
 
 const jpContainer = document.getElementById("janela_pref")
 const jpElements = document.getElementsByClassName("jp_element")
+const jpDifSelect = document.getElementById("dificult_select")
 const jpButton00 = document.getElementById("jp_button00")
 const jpButton01 = document.getElementById("jp_button01")
 
@@ -23,10 +25,10 @@ const cgElements = document.getElementsByClassName("cg_element")
 const cgButtonSave = document.getElementById("cg_buttonSave")
 const cgButtonBack = document.getElementById("cg_buttonBack")
 
-const tmContainer = document.getElementById("janela_tema")
-const tmElements = document.getElementsByClassName("tm_element")
-const tmButtonSave = document.getElementById("tm_buttonSave")
-const tmButtonBack = document.getElementById("tm_buttonBack")
+const prContainer = document.getElementById("janela_perso")
+const prElements = document.getElementsByClassName("pr_element")
+const prButtonSave = document.getElementById("pr_buttonSave")
+const prButtonBack = document.getElementById("pr_buttonBack")
 
 
 const buttonPlay = document.getElementById("play_button"); /* PREFS */
@@ -34,6 +36,11 @@ const buttonPlay = document.getElementById("play_button"); /* PREFS */
 //* Area de variaveis de temporarias *//
 
 let clicked = false;
+
+let config = undefined
+let paleta = undefined
+let uiMusic = undefined
+let preferences = undefined
 
 //* Area das Funcoes *//
 
@@ -77,7 +84,7 @@ function janelaHome(command){
             janelaPref("show")
         });
         jhButton01.addEventListener('click', function(event) {
-            //janelaTema("show")
+            //janelaPerso("show")
         });
         jhButton02.addEventListener('click', function(event) {
             //janelaConfig("show")
@@ -96,11 +103,14 @@ function janelaPref(command){
     if (command === "show") {
         jpContainer.style.display = "flex"
         jpContainer.style.zIndex = "99"
+        writerLocal('update','dificuldade','FACIL')
+        writerLocal('update','playlist','default')
 
         showElements(jpElements);
         jpButton00.addEventListener('click', function(event) {
             janelaPref("hide")
             janelaHome("hide")
+
             window.location.replace('./src/game/')
         });
         jpButton01.addEventListener('click', function(event) {
@@ -111,6 +121,9 @@ function janelaPref(command){
             if (event.key === "Escape") {
                 janelaPref("hide")
             }
+        })
+        jpDifSelect.addEventListener('change', function(event) {
+            writerLocal('update','dificuldade',event.target.value)
         })
     }
     else if (command === "hide") {
@@ -151,32 +164,32 @@ function janelaConfig(command){
     }
 }
 
-function janelaTema(command){
+function janelaPerso(command){
     if (command === "show") {
-        tmContainer.style.display = "flex"
-        tmContainer.style.zIndex = "99"
+        prContainer.style.display = "flex"
+        prContainer.style.zIndex = "99"
         
-        showElements(tmElements);
-        tmButtonSave.addEventListener('click', function(event) {
+        showElements(prElements);
+        prButtonSave.addEventListener('click', function(event) {
             /*Not Funtional */
-            janelaTema("hide")
+            janelaPerso("hide")
         });
-        tmButtonBack.addEventListener('click', function(event) {
+        prButtonBack.addEventListener('click', function(event) {
             /*Not Funtional */
-            janelaTema("hide")
+            janelaPerso("hide")
         });
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") {
-                janelaTema("hide")
+                janelaPerso("hide")
             }
         })
     }
     else if (command === "hide") {
-        hideElements(tmElements);
-        tmContainer.style.display = "none"
+        hideElements(prElements);
+        prContainer.style.display = "none"
     }
     else {
-        console.log(`func janelaTema >> commando string ${command} desconhecido`)
+        console.log(`func janelaPerso >> commando string ${command} desconhecido`)
     }
 }
 
@@ -190,6 +203,24 @@ function toggleGame() {
     clicked = !clicked;
 }
 
+
 //* Janela Inicial *//
+
+if (localStorage.length === 0) {
+    let config = [
+        {volume:80},
+        {musicName:"default"}];
+
+    let paleta = {paletName:"default"};
+
+    let preferences = [
+        {dificuldade:"FACIL"},
+        {playlist:"default"}]
+
+    writerLocal("create","config",config)
+    writerLocal("create","paleta",paleta)
+    writerLocal("create","preferences",preferences)
+}
+
 janelaInicial('show')
 

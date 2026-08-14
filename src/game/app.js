@@ -1,6 +1,40 @@
 import { observer, destroyer, isVisibleList, theConstrutor, newDificult } from "./game.js";
 import { player, carregarPlaylist } from "../music/player.js";
 
+const cgContainer = document.getElementById("janela_config")
+const cgElements = document.getElementsByClassName("cg_element")
+const cgButtonSave = document.getElementById("cg_buttonSave")
+const cgButtonBack = document.getElementById("cg_buttonBack")
+
+function janelaConfig(command){
+    if (command === "show") {
+        cgContainer.style.display = "flex"
+        cgContainer.style.zIndex = "99"
+        
+        showElements(cgElements);
+        cgButtonSave.addEventListener('click', function(event) {
+            /*Not Funtional */
+            janelaConfig("hide")
+        });
+        cgButtonBack.addEventListener('click', function(event) {
+            /*Not Funtional */
+            janelaConfig("hide")
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                janelaConfig("hide")
+            }
+        })
+    }
+    else if (command === "hide") {
+        hideElements(cgElements);
+        cgContainer.style.display = "none"
+    }
+    else {
+        console.log(`func janelaConfig >> commando string ${command} desconhecido`)
+    }
+}
+
 //função para rodar o fluxo assíncrono
 async function inicializar() {
     // Inicia o sistema que limpa as letras da tela
@@ -27,3 +61,5 @@ elementButton.addEventListener('click', function(event) {
     /*REDIRECIONA PARA A PÁGINA HOME*/
     window.location.replace('../../index.html');
 });
+
+

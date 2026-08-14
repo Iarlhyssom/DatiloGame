@@ -6,16 +6,13 @@ Descrição do projeto:
     Interface de Entrada:
         O projeto deve ter uma interface de entrada onde o usuario escolhe seu nickname.
         Nesta mesma devem aparecer um placar com os ultimos 10 melhores jogadores anteriores.
-        Tambem um botao de opções que ajude a configurar preferencias de estetica e volume do app.
-        É necessario um botão que abra uma tela para o input de uma playlist local, esta mesma aba deve ser capaz
-            de criar e gerenciar as pastas com as musicas escolhidas. #futuramente podendo se implementado a opção de playlists externas
-            como spotfy ou youtube.
+        Tambem botoes de Configuração e Tema para preferencias como volume e estetica do site.
+        
         Deve conter um botão de play new game.
     
-    Tela de Escolha da playlist e tema de fundo:
-        Nesta aba deve aparecer uma pequena janela no centro da tela com a escolha da playlist / tema do cenario
-        #futuramente o cenario se tornando automatico de acordo com a musica tocada.
-        por final nesta tela deve haver um botão de start/play
+    Tela de Preferencias da partida:
+        É necessario um botão que abra uma tela para o input de uma playlist local, esta mesma aba deve ser capaz
+            de criar e gerenciar as pastas com as musicas escolhidas.Por final nesta tela deve haver os botões de start/play e voltar.
 
     Tela do "Game":
         Aqui se encontra o coração do projeto.
@@ -32,6 +29,8 @@ Descrição do projeto:
 
 Diferencial do Projeto:
 
-    O maior ponto forte do projeto devera ser o cenario e a possibilidade de personalização do mesmo.
-    Assim como a integração das playlists locais personalizaveis.
+    O maior ponto forte do projeto devera ser a possibilidade de testar seus limites com a digitação,
+        quanto maior o score mais dificil fica olhar para o teclado
+        tambem teremos uma variedade de cenarios e a possibilidade de personalização do mesmo. 
+        Assim como a integração das playlists locais personalizaveis.
     

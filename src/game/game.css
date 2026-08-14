@@ -146,6 +146,9 @@ h1 {
     gap: 15px;
     display: none;
 }
+#middleDiv #newGameButton{
+    animation: pulsar 0.9s infinite;
+}
 
 button {
     background-color: #000000;
@@ -336,7 +339,7 @@ button {
     align-items: center !important;
 }
 
-#tm_capsule {
+#pr_capsule {
     /* Ativa o flexbox para repassar a centralização para o container */
     justify-content: center;
     align-items: center;
@@ -347,7 +350,7 @@ button {
     height: 50%;
 }
 
-#tm_container {
+#pr_container {
     background-color: #000000;
     flex-direction: column;
     justify-content: center;
@@ -362,7 +365,7 @@ button {
     box-sizing: border-box;
 }
 
-#tm_film {
+#pr_film {
     display: none;
     position: fixed;
     top: 0;

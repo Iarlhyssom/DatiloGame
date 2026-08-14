@@ -10,7 +10,7 @@ analyser.fftSize = 32;
 source.connect(analyser);
 analyser.connect(audioContext.destination);
 
-//Variáveis globais para que 'checarRitmo' consiga acessá-las
+//Variáveis globais
 const dados = new Uint8Array(analyser.frequencyBinCount);
 let hitvalor = 0; 
 const cont = document.getElementById('seu-id-do-contador'); 
@@ -19,8 +19,6 @@ const cont = document.getElementById('seu-id-do-contador');
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export async function player(playlist) {    
-    //Ativa o áudio e o loop de ritmo antes do loop das músicas
-    await audioContext.resume();
     console.log("funcao player on")
 
     for (let i = 0; i < playlist.length; i++) {

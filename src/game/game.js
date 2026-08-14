@@ -1,3 +1,5 @@
+import {writerLocal, readLocal} from "../manager/writer.js"
+
 const elementFilm = document.querySelector('#tg_film')
 const elementEndScore = document.querySelector('#tg_film #endScore')
 const elementGameUi = document.querySelector('#gameUI')
@@ -9,6 +11,24 @@ const elementGameDiv = document.querySelector('#gameDiv')
 let life = 100
 let combo = 0
 let score = 0
+let prefs = readLocal("preferences")
+console.log(prefs)
+let dificult = (prefs && prefs[0]) ? prefs[0].dificuldade : "FACIL"; // if (prefs && prefs[0]) {dificult = prefs[0].dif} else {dificult = "FACIL"}
+
+switch (dificult) {
+    case "FACIL":
+        life = 100;
+        break
+    case "NORMAL":
+        life = 50;
+        break
+    case "DIFICIL":
+        life = 10;
+        break
+    default :
+        life = 27;
+        break
+} 
 
 export function theConstrutor(mode,dificultNumber,velocity){
     let dificult = dificultNumber

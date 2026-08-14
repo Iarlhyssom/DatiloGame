@@ -32,12 +32,14 @@
         <div id="container" class="jh_element">
             <div id="lefthDiv" class="jh_element">
                 <div id="imageDiv" class="jh_element">
+                    <img src="./src/assets/datilogifAi.gif" 
+                    alt="Gif datilo feito por ai" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
             </div>
             <div id="middleDiv" class="jh_element">
                 <button className="button" id="newGameButton">Novo Jogo
                 </button>
-                <button className="button" id="temaGameButton">Mudar Tema
+                <button className="button" id="persoGameButton">Personalizar
                 </button>
                 <button className="button" id="configButton">Configurações
                 </button>
@@ -46,14 +48,14 @@
                 <div id="ranking" class="jh_element">TOP RANKING</div>
             </div>
         </div>
-        <div id="janela_tema" class="windowDiv">
-            <div id="tm_film" class="tm_element">
-                <div id="tm_capsule">
-                    <div id="tm_container" class="tm_element">
-                        <h1 class="tm_element">MUDAR TEMA</h1>
-                        <div id="tm_buttonsDiv" class="tm_element">
-                            <button Id="tm_buttonSave" className="button">Salvar</button>
-                            <button Id="tm_buttonBack" className="button">Voltar</button>
+        <div id="janela_perso" class="windowDiv">
+            <div id="pr_film" class="pr_element">
+                <div id="pr_capsule">
+                    <div id="pr_container" class="pr_element">
+                        <h1 class="pr_element">Janela de Personalização</h1>
+                        <div id="pr_buttonsDiv" class="pr_element">
+                            <button Id="pr_buttonSave" className="button">Salvar</button>
+                            <button Id="pr_buttonBack" className="button">Voltar</button>
                         </div>
                     </div>
                 </div>
@@ -82,7 +84,7 @@
                     <h1>PREDEFINICÕES DE JOGO</h1>
                     <div Id="div_dificult" class="jp_element">
                         <P>DIFICULDADE</P>
-                        <select>
+                        <select id="dificult_select">
                             <option>FACIL</option>
                             <option>NORMAL</option>
                             <option>DIFICIL</option>
@@ -90,7 +92,7 @@
                     </div>
                     <div id="div_playlist" class="jp_element">
                         <P>ESCOLHA A PLAYLIST</P>
-                        <select>
+                        <select id="playlist_select">
                             <option>PLAYLIST PADRAO</option>
                             <option>-ADCIONAR PLAYLIST-</option>
                         </select>

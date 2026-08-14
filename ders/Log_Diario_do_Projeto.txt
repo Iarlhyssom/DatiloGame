@@ -16,3 +16,6 @@
                 Feitas algumas alteracoes para adptar o projeto para rodar no github pages.
 11-08-2026 - Altareda a forma com que a navegação é feita, de janelas para "divs de janelas", mantendo somente o html inicial e o html do game.
                 .
+12-08-2026 - Alterações na janela do Game reduzindo a zona de interação com as letras de 100% da tela para 80%, e adaptando o codigo para operar nas duas situações.
+                .
+
