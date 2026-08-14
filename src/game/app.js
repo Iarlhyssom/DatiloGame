@@ -1,5 +1,6 @@
 import { observer, destroyer, isVisibleList, theConstrutor, newDificult } from "./game.js";
 import { player, carregarPlaylist } from "../music/player.js";
+import {writerLocal, readLocal} from "../manager/writer.js";
 
 const elementButton = document.querySelector('#tg_film #click')
 const cgContainer = document.getElementById("janela_config")
@@ -7,6 +8,9 @@ const cgElements = document.getElementsByClassName("cg_element")
 const cgButtonSave = document.getElementById("cg_buttonSave")
 const cgButtonBack = document.getElementById("cg_buttonBack")
 const gameDiv = document.getElementById("gameDiv")
+
+const audioElement = document.getElementById('player')
+const musicVolElement = document.getElementById('musicVolume')
 
 let isPaused = false
 
@@ -54,6 +58,9 @@ async function inicializar() {
     // Inicia o sistema que limpa as letras da tela
     observer("game");
     theConstrutor("game",10,120)
+    
+    /*Atualizando elementos da janela config */
+    musicVolElement.value = readLocal("config","musicVolume")
 
     // Aguarda a playlist ser carregada do JSON antes de entregar ao player
     const playlistReal = await carregarPlaylist();
@@ -80,12 +87,16 @@ elementButton.addEventListener('click', function(event) {
 
         
 cgButtonSave.addEventListener('click', function(event) {
-    /*Not Funtional */
     janelaConfig("hide")
     gamePause();
 });
 cgButtonBack.addEventListener('click', function(event) {
     window.location.replace('../../index.html');
 });
+
+musicVolElement.addEventListener('input', function(event){
+    writerLocal('update','musicVolume',event.target.value)
+    audioElement.volume = event.target.value;
+})
 
 

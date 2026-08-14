@@ -1,12 +1,14 @@
 //* Area de importação *//
 import { observer, isVisibleList, theConstrutor } from "../game/game.js";
 import {writerLocal, readLocal} from "./writer.js"
+import { uiPlayer, playerController} from "../music/player.js";
 
 //* Area de variaveis de elementos *//
 const bodyArray = document.getElementsByClassName("windowDiv") /* Array com as Janelas do Index */
 const jiContainer = document.getElementById("janela_inicial") /* Id da Div Container JI */
 const jiButton00 = document.getElementById("button00") /* Botao da JI */
 const jiElements = document.getElementsByClassName('ji_element'); /* Array de Elementos da JI */
+const audioElement = document.getElementById('player')
 
 const jhContainer = document.getElementById("janela_home")
 const jhElements = document.getElementsByClassName("jh_element")
@@ -24,6 +26,7 @@ const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
 const cgButtonSave = document.getElementById("cg_buttonSave")
 const cgButtonBack = document.getElementById("cg_buttonBack")
+const musicVolElement = document.getElementById('musicVolume')
 
 const prContainer = document.getElementById("janela_perso")
 const prElements = document.getElementsByClassName("pr_element")
@@ -87,7 +90,7 @@ function janelaHome(command){
             //janelaPerso("show")
         });
         jhButton02.addEventListener('click', function(event) {
-            //janelaConfig("show")
+            janelaConfig("show")
         });
     }
     else if (command === "hide") {
@@ -208,8 +211,9 @@ function toggleGame() {
 
 if (localStorage.length === 0) {
     let config = [
-        {volume:80},
-        {musicName:"default"}];
+        {musicVolume:0.6},
+        {efectVolume:0.6},
+        {uiMusicName:"default"}];
 
     let paleta = {paletName:"default"};
 
@@ -221,6 +225,14 @@ if (localStorage.length === 0) {
     writerLocal("create","paleta",paleta)
     writerLocal("create","preferences",preferences)
 }
+else {
+    musicVolElement.value = readLocal("config","musicVolume")
+}
 
 janelaInicial('show')
+uiPlayer("play",readLocal('config',"uiMusicName"))
 
+musicVolElement.addEventListener('input', function(event){
+    writerLocal('update','musicVolume',event.target.value)
+    audioElement.volume = event.target.value;
+})

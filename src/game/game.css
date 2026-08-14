@@ -156,15 +156,29 @@ h1 {
 }
 
 button {
+    /* 1. Desativa o estilo nativo de botões do iOS/Safari */
+    -webkit-appearance: none;
+    appearance: none;
+
+    /* 2. Garante que padding e borda fiquem DENTRO da largura estipulada */
+    box-sizing: border-box;
+
     background-color: #000000;
-    padding: 10px 20px;
-    width: 200px;
+    padding: 12px 20px; /* 12px melhora o toque com o dedo no celular */
+    
+    /* 3. LARGURA RESPONSIVA: */
+    width: 100%;          /* Ocupa a largura total do container no celular... */
+    max-width: 200px;     /* ...mas nunca passa de 200px em telas maiores */
+
     color: #ffffff;
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
     border: 2px solid #858080;
 
+    /* 4. Melhora a experiência de toque no Mobile */
+    -webkit-tap-highlight-color: transparent; /* Remove o quadrado cinza ao tocar */
+    touch-action: manipulation;              /* Impede zoom acidental no duplo toque */
 }
 
 #ranking {
@@ -202,7 +216,6 @@ button {
     -webkit-backdrop-filter: blur(2px);
     z-index: 9999;
 
-    /* --- O SEGREDO ESTÁ AQUI --- */
     /* Transforma a película inteira em um centralizador universal */
     justify-content: center !important;
     align-items: center !important;
@@ -338,10 +351,23 @@ button {
     -webkit-backdrop-filter: blur(2px);
     z-index: 9999;
 
-    /* --- O SEGREDO ESTÁ AQUI --- */
     /* Transforma a película inteira em um centralizador universal */
     justify-content: center !important;
     align-items: center !important;
+}
+
+#cg_volumeDiv {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: sans-serif;
+}
+
+/* Deixa o slider com tamanho bom e cor personalizada (opcional) */
+input[type="range"] {
+    width: 150px;
+    cursor: pointer;
+    accent-color: #ffffff; /* Cor da bolinha e barra */
 }
 
 #pr_capsule {
@@ -382,7 +408,6 @@ button {
     -webkit-backdrop-filter: blur(2px);
     z-index: 9999;
 
-    /* --- O SEGREDO ESTÁ AQUI --- */
     /* Transforma a película inteira em um centralizador universal */
     justify-content: center !important;
     align-items: center !important;
