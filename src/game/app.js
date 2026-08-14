@@ -1,30 +1,32 @@
 import { observer, destroyer, isVisibleList, theConstrutor, newDificult } from "./game.js";
 import { player, carregarPlaylist } from "../music/player.js";
 
+const elementButton = document.querySelector('#tg_film #click')
 const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
 const cgButtonSave = document.getElementById("cg_buttonSave")
 const cgButtonBack = document.getElementById("cg_buttonBack")
+const gameDiv = document.getElementById("gameDiv")
+
+let isPaused = false
+
+function hideElements(elements/*Array*/) {
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].style.display = "none"
+    }
+}
+
+function showElements(elements/*Array*/) {
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].style.display = "flex"
+    }
+}
 
 function janelaConfig(command){
     if (command === "show") {
         cgContainer.style.display = "flex"
         cgContainer.style.zIndex = "99"
-        
         showElements(cgElements);
-        cgButtonSave.addEventListener('click', function(event) {
-            /*Not Funtional */
-            janelaConfig("hide")
-        });
-        cgButtonBack.addEventListener('click', function(event) {
-            /*Not Funtional */
-            janelaConfig("hide")
-        });
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape") {
-                janelaConfig("hide")
-            }
-        })
     }
     else if (command === "hide") {
         hideElements(cgElements);
@@ -32,6 +34,18 @@ function janelaConfig(command){
     }
     else {
         console.log(`func janelaConfig >> commando string ${command} desconhecido`)
+    }
+}
+
+function gamePause() {
+    isPaused = !isPaused;
+    if (isPaused) {
+        janelaConfig("show")
+        gameDiv.classList.add('jogo-pausado');
+    }
+    else {
+        janelaConfig("hide")
+        gameDiv.classList.remove('jogo-pausado');
     }
 }
 
@@ -54,11 +68,23 @@ inicializar();
 // Captura o teclado do jogador (Sua lógica original exata)
 document.addEventListener('keydown', function(clicked) {
     destroyer(clicked.key, isVisibleList);
+    if (clicked.key === 'Escape') {
+        gamePause();
+    }
 });
 
-const elementButton = document.querySelector('#tg_film #click')
 elementButton.addEventListener('click', function(event) {
     /*REDIRECIONA PARA A PÁGINA HOME*/
+    window.location.replace('../../index.html');
+});
+
+        
+cgButtonSave.addEventListener('click', function(event) {
+    /*Not Funtional */
+    janelaConfig("hide")
+    gamePause();
+});
+cgButtonBack.addEventListener('click', function(event) {
     window.location.replace('../../index.html');
 });
 

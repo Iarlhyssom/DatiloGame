@@ -28,6 +28,11 @@ body {
     animation-fill-mode: forwards;
 }
 
+.jogo-pausado .box-style {
+    animation-play-state: paused !important;
+    transition: none !important;
+}
+
 #ji_film {
     background-color: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(2px);
@@ -122,7 +127,7 @@ h1 {
     margin-top: -20%;
     background-color: #000000;
     padding: 0px 20px;
-    font-size: 15px;
+    font-size: 18px;
 }
 
 #container {
@@ -430,3 +435,10 @@ button {
     }
 }
 
+label {
+    font-size: 14px;
+    font-family: sans-serif;
+    font-weight: bold;
+    background-color: #070707;
+    color: white;
+}
