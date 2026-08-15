@@ -7,13 +7,18 @@ const elementLife = document.querySelector('.hud-item #life_points')
 const elementScore = document.querySelector('.hud-item #score')
 const elementCombo = document.querySelector('.hud-item #combo')
 const elementGameDiv = document.querySelector('#gameDiv')
+export let observerLoop; /*ID do Loop Observer*/
 
 let life = 100
 let combo = 0
 let score = 0
 let prefs = readLocal("preferences")
-console.log(prefs)
 let dificult = (prefs && prefs[0]) ? prefs[0].dificuldade : "FACIL"; // if (prefs && prefs[0]) {dificult = prefs[0].dif} else {dificult = "FACIL"}
+
+let nickName = readLocal('nickName') ?? {nickName: 'guest'};
+let types = 0;
+let timeStart = Date.now(); 
+let reStatus = false /* Se registrado muda pra true */
 
 switch (dificult) {
     case "FACIL":
@@ -147,15 +152,20 @@ function generate_spawnMap(mode){
 export let isVisibleList = []
 export function observer(mode) {
     // 1. Trava de segurança
-    if (!elementLife || !elementGameDiv) return;
-
+    if (mode === "game") {
+        if (!elementLife || !elementGameDiv){
+            console.warn("func observer [Trava de segurança ativada! O observer desativado.]");
+            return;
+        }
+        elementLife.innerText = life;
+    }
     // 2. Medição da borda inferior exata no monitor (rodada apenas 1 vez)
     const gameDivRect = elementGameDiv.getBoundingClientRect();
-    const limitY = mode === "game" ? gameDivRect.bottom : window.innerHeight;
+    const limitY = gameDivRect.bottom
 
     let loteinGame = document.querySelectorAll('.box-style');
     let list = [];
-    elementLife.innerText = life;
+    
 
     for (let i = 0; i < loteinGame.length; i++) {
         let item = loteinGame[i];
@@ -174,18 +184,20 @@ export function observer(mode) {
                 life--;
                 elementLife.innerText = life;
             }
-
             if (life <= 0 && mode === "game") {
                 elementEndScore.innerText = score;
                 elementFilm.style.display = "flex";
                 elementGameUi.style.display = "none";
+                rankRegister();
+            }
+            if (mode === "static") {
+                item.remove();
             }
         }
     }
-
     isVisibleList.length = 0;
     isVisibleList.push(...list);
-    requestAnimationFrame(() => observer(mode));
+    observerLoop = requestAnimationFrame(() => observer(mode));
 }
 export function destroyer(key,list) {
     key = key.toUpperCase()
@@ -202,7 +214,10 @@ export function destroyer(key,list) {
     /*PEGA O MAIOR VALOR NA LISTA POSITIONS*/
     let target = positions.reduce((max, atual) => atual.itemY > max.itemY ? atual : max);
     target.item.remove();
-    elementScore.innerText = score++
+    if (reStatus === false) {
+        types++
+        elementScore.innerText = score++
+    }
 }
 
 /* Função para regular a dificuldade ao longo do jogo - FACIL / NORMAL */
@@ -229,6 +244,25 @@ export function newDificult(dif,vpx,sco) { /*dificuldade, velocidade px/s, score
     }
     dif = dif + valor;
     vpx = vpx + valor;
-    console.log(valor," dificuldade atualizada ",dif,"dif // ",vpx,"pxs");
+    //console.log(valor," dificuldade atualizada ",dif,"dif // ",vpx,"pxs");
     return [dif, vpx];
+}
+
+function rankRegister() {
+    if (reStatus === true) {return};
+    let register = [nickName]
+    let interval = (Date.now())-timeStart
+    let reScore = {score:score};
+    let isTime = (interval/1000);
+    let reTime = {time:`${isTime}s`};
+    let reTs;
+
+    if (types > 0) {
+        reTs = Math.floor((isTime/types)*10)/10; /* Aredondando para 1 casa dec */
+        reTs = {ts:`${reTs}/s`}
+    }else {reTs = {ts:'0/s'}}
+
+    register.push(reScore,reTs,reTime)
+    writerLocal('create','register',register)
+    reStatus = true;
 }

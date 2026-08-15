@@ -1,7 +1,7 @@
 //* Area de importação *//
-import { observer, isVisibleList, theConstrutor } from "../game/game.js";
-import {writerLocal, readLocal} from "./writer.js"
-import { uiPlayer, playerController} from "../music/player.js";
+import { observer, observerLoop, isVisibleList, theConstrutor } from "../game/game.js";
+import { writerLocal, readLocal } from "./writer.js"
+import { uiPlayer, playerController } from "../music/player.js";
 
 //* Area de variaveis de elementos *//
 const bodyArray = document.getElementsByClassName("windowDiv") /* Array com as Janelas do Index */
@@ -9,18 +9,21 @@ const jiContainer = document.getElementById("janela_inicial") /* Id da Div Conta
 const jiButton00 = document.getElementById("button00") /* Botao da JI */
 const jiElements = document.getElementsByClassName('ji_element'); /* Array de Elementos da JI */
 const audioElement = document.getElementById('player')
+const elementContador = document.getElementById('contador');
 
 const jhContainer = document.getElementById("janela_home")
 const jhElements = document.getElementsByClassName("jh_element")
 const jhButton00 = document.getElementById("newGameButton")
 const jhButton01 = document.getElementById("persoGameButton")
 const jhButton02 = document.getElementById("configButton")
+const jhNickName = document.querySelector("#nicknameDiv input")
+const jhrankTable = document.querySelector('.ranking-table')
 
 const jpContainer = document.getElementById("janela_pref")
 const jpElements = document.getElementsByClassName("jp_element")
 const jpDifSelect = document.getElementById("dificult_select")
-const jpButton00 = document.getElementById("jp_button00")
-const jpButton01 = document.getElementById("jp_button01")
+const jpButtonPlay = document.getElementById("jp_buttonPlay")
+const jpButtonBack = document.getElementById("jp_buttonBack")
 
 const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
@@ -44,6 +47,7 @@ let config = undefined
 let paleta = undefined
 let uiMusic = undefined
 let preferences = undefined
+let nickName = {'nickName':jhNickName.value}
 
 //* Area das Funcoes *//
 
@@ -63,7 +67,10 @@ function janelaInicial(command){
     if (command === "show") {
         showElements(jiElements);
         jiContainer.style.display = "flex"
+
         setInterval(gameINbackground, 999);
+        observer('static')
+
         jiContainer.addEventListener('click', function(event) {
             toggleGame()
             janelaInicial("hide")
@@ -73,6 +80,7 @@ function janelaInicial(command){
     else if (command === "hide") {
         hideElements(jiElements);
         jiContainer.style.display = "none"
+        cancelAnimationFrame(observerLoop)
     }
     else {
         console.log(`func janelaInicial >> commando string ${command} desconhecido`)
@@ -110,13 +118,13 @@ function janelaPref(command){
         writerLocal('update','playlist','default')
 
         showElements(jpElements);
-        jpButton00.addEventListener('click', function(event) {
+        jpButtonPlay.addEventListener('click', function(event) {
             janelaPref("hide")
             janelaHome("hide")
-
+            writerLocal('create','nickName',nickName)
             window.location.replace('./src/game/')
         });
-        jpButton01.addEventListener('click', function(event) {
+        jpButtonBack.addEventListener('click', function(event) {
             /*Not Funtional */
             janelaPref("hide")
         });
@@ -185,7 +193,7 @@ function janelaPerso(command){
             if (event.key === "Escape") {
                 janelaPerso("hide")
             }
-        })
+        });
     }
     else if (command === "hide") {
         hideElements(prElements);
@@ -227,10 +235,37 @@ if (localStorage.length === 0) {
 }
 else {
     musicVolElement.value = readLocal("config","musicVolume")
+    let registro = readLocal('register')
+    console.log(registro)
+    jhrankTable.querySelector('#primeiro')
+    .cells[1]
+    .textContent = registro[0]['nickName']
+
+    jhrankTable.querySelector('#primeiro')
+    .cells[2]
+    .textContent = registro[1]['score']
+
+    jhrankTable.querySelector('#primeiro')
+    .cells[3]
+    .textContent = registro[2]['ts']
+
+    jhrankTable.querySelector('#primeiro')
+    .cells[4]
+    .textContent = registro[3]['time']
 }
+
 
 janelaInicial('show')
 uiPlayer("play",readLocal('config',"uiMusicName"))
+
+function contadorUpdate() {
+    let loteinGame = document.querySelectorAll('.box-style');
+    let elementContador = document.getElementById('contador');
+
+    elementContador.innerText = loteinGame.length
+    setInterval(contadorUpdate,3000)
+}
+contadorUpdate()
 
 musicVolElement.addEventListener('input', function(event){
     writerLocal('update','musicVolume',event.target.value)

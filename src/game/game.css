@@ -47,6 +47,45 @@ body {
     justify-content: center;
     align-items: center;
     gap: 10px;
+    z-index: 98;
+}
+
+#contDiv {
+    display: flex;
+}
+
+#contador {
+    margin-top: auto;
+    position: relative;
+    z-index: 99;
+    color: rgba(255, 255, 255, 0.2);
+    
+}
+
+#nicknameDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+#nicknameDiv > input {
+    text-align: center;
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+
+    background-color: hsl(0, 7%, 97%);
+    
+    width: 100%;          
+    max-width: 200px;     
+
+    color: #000000;
+    font-size: 16px; /* Perfeito: evita o zoom automático do iOS ao focar */
+    border-radius: 5px;
+    border: 2px solid #858080;
+
+    -webkit-tap-highlight-color: transparent; 
 }
 
 #tg_film {
@@ -182,6 +221,7 @@ button {
 }
 
 #ranking {
+    box-sizing: border-box; /* 👈 ADICIONE ISSO */
     width: 90%;
     height: 80%;
     background-color: rgba(0, 0, 0, 0.2);
@@ -192,6 +232,45 @@ button {
     align-items: center;
     margin-bottom: 80px;
     display: none;
+    text-align: center;
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+/* Código padrão para computadores (Sem nenhuma barra de scroll) */
+#rankingCapsule {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ranking-table th, 
+.ranking-table td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   SÓ ATIVA OS SCROLLS SE A TELA FOR PEQUENA 
+   ========================================== */
+
+/* Se a LARGURA da janela for menor que 600px (Celular em pé) */
+@media (max-width: 1163px) {
+    #rankingCapsule { overflow-x: auto; } /* Ativa scroll horizontal */
+    .ranking-table { min-width: 500px; }  /* Impede a tabela de esmagar */
+}
+
+/* Se a ALTURA da janela for menor que 500px (Celular deitado / Telas muito baixas) */
+@media (max-height: 500px) {
+    #rankingCapsule { 
+        max-height: 600px;    /* Trava o tamanho do ranking */
+        overflow-y: auto;     /* Ativa o scroll vertical */
+    } 
 }
 
 #imageDiv {
@@ -308,6 +387,11 @@ button {
     /* --- MUDANÇAS AQUI --- */
     text-align: left;    /* Alinha o texto para a esquerda */
     width: 100%;         /* Ocupa a largura total para fixar o início na borda */
+}
+
+#colorSelect > div {
+    display: flex;
+    justify-content: space-between;
 }
 
 #janela_config {

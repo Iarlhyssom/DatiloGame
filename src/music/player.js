@@ -3,6 +3,9 @@ import {writerLocal, readLocal} from "../manager/writer.js"
 const audioContext = new AudioContext();
 const audioElement = document.getElementById('player');
 
+export const defaultPlaylist = './local/standardPlaylist/standardPlaylist.json';
+const defaultuiMusic = './local/uiMusics/Courage(8-Bit-Remix).mp3';
+
 //Função utilitária para permitir a pausa de 3 segundos
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -36,13 +39,20 @@ export async function player(playlist) {
     }
 }
 
-export async function carregarPlaylist() {
+export async function locateFile(caminho,type) {
     // Cria um link dinâmico absoluto baseado na pasta onde o player.js está salvo
-    const urlJson = new URL('./local/standardPlaylist/standardPlaylist.json', import.meta.url).href;
+    const urlFile = new URL(caminho, import.meta.url).href;
+    const local = await fetch(urlFile);
+    let file;
+    if (type === 'json') {
+        file = await local.json();
+        return file;
+    }
+    else if (type === 'mp3') {
+        file = local.url
+        return file;
+    }
     
-    const local = await fetch(urlJson);
-    const playlist = await local.json();
-    return playlist;
 }
 
 export async function uiPlayer(command, music, loop = true) {
@@ -52,13 +62,13 @@ export async function uiPlayer(command, music, loop = true) {
     if (music != undefined && command != undefined) {
         switch (music) {
             case "default":
-                audioElement.src = "./src/music/local/uiMusics/Courage(8-Bit-Remix).mp3";
+                audioElement.src = await locateFile(defaultuiMusic,'mp3');
                 audioElement.load();
                 playerController(command)
                 break;
                 
             default:
-                audioElement.src = "./local/uiMusics/Courage(8-Bit-Remix).mp3";
+                audioElement.src = await locateFile(defaultuiMusic,'mp3');
                 audioElement.load();
                 playerController(command)
                 console.log("func uiPlayer [erro no arg 2 executando switch default]")

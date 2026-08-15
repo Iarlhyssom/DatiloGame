@@ -33,7 +33,7 @@ export function writerLocal(command,key,value){
         else if (key != undefined && value === undefined) {
             console.log("func writerLocal [informe value(object/array)]")
         }
-        else {console.log("func writerLocal [key error]")}
+        else {return "func writerLocal [key error]"}
     else if (command === 'update') {
         let localKeys, keyContent, newObject
         if (localStorage.length > 0) {

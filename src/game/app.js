@@ -1,5 +1,5 @@
 import { observer, destroyer, isVisibleList, theConstrutor, newDificult } from "./game.js";
-import { player, carregarPlaylist } from "../music/player.js";
+import { player, locateFile, defaultPlaylist } from "../music/player.js";
 import {writerLocal, readLocal} from "../manager/writer.js";
 
 const elementButton = document.querySelector('#tg_film #click')
@@ -63,7 +63,7 @@ async function inicializar() {
     musicVolElement.value = readLocal("config","musicVolume")
 
     // Aguarda a playlist ser carregada do JSON antes de entregar ao player
-    const playlistReal = await carregarPlaylist();
+    const playlistReal = await locateFile(defaultPlaylist,'json');
     
     // Inicia a música passando o array
     player(playlistReal);
