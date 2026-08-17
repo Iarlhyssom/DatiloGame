@@ -27,7 +27,7 @@ const jpButtonBack = document.getElementById("jp_buttonBack")
 
 const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
-const cgButtonReload = document.getElementById("cg_buttonReload")
+const cgButtonSave = document.getElementById("cg_buttonSave")
 const cgButtonBack = document.getElementById("cg_buttonBack")
 const musicVolElement = document.getElementById('musicVolume')
 
@@ -152,7 +152,7 @@ function janelaConfig(command){
         cgContainer.style.zIndex = "99"
         
         showElements(cgElements);
-        cgButtonReload.addEventListener('click', function(event) {
+        cgButtonSave.addEventListener('click', function(event) {
             /*Not Funtional */
             janelaConfig("hide")
         });
