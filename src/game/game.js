@@ -1,4 +1,4 @@
-import {writerLocal, readLocal} from "../manager/writer.js"
+import {writerLocal, readLocal, createLocals} from "../manager/writer.js"
 
 const elementFilm = document.querySelector('#tg_film')
 const elementEndScore = document.querySelector('#tg_film #endScore')
@@ -12,13 +12,23 @@ export let observerLoop; /*ID do Loop Observer*/
 let life = 100
 let combo = 0
 let score = 0
-let prefs = readLocal("preferences")
-let dificult = (prefs && prefs[0]) ? prefs[0].dificuldade : "FACIL"; // if (prefs && prefs[0]) {dificult = prefs[0].dif} else {dificult = "FACIL"}
+let prefs = readLocal("key","preferences")
+let namecache = readLocal("tag",'nickName')
 
-let nickName = readLocal('nickName') ?? {nickName: 'guest'};
+if (!namecache || !prefs){
+    createLocals()
+    let namecache = readLocal("tag",'nickName')
+    let prefs = readLocal("key","preferences")
+}
+
+let dificult = (prefs && prefs[0]) ? prefs[0].dificuldade : "FACIL"; // if (prefs && prefs[0]) {dificult = prefs[0].dif} else {dificult = "FACIL"}
+let name = namecache[0];
+
 let types = 0;
 let timeStart = Date.now(); 
 let reStatus = false /* Se registrado muda pra true */
+
+
 
 switch (dificult) {
     case "FACIL":
@@ -250,26 +260,31 @@ export function newDificult(dif,vpx,sco) { /*dificuldade, velocidade px/s, score
 
 function rankRegister() {
     if (reStatus === true) {return};
-    let register = [nickName]
+    let register = [name]
+    console.log(name)
     let interval = (Date.now())-timeStart
     let reScore = {score:score};
     let isTime = (interval/1000);
-    let reTime = {time:`${isTime}s`};
-    let reTs;
+    let reTs,reTime;
+    console.log(isTime)
+    isTime = isTime.toFixed(1)
+    
+    if (isTime > 59) {
+        isTime = isTime / 60;
+        reTime = {time:`${isTime}/m`};
+    }
+    else if (isTime > 3600) {
+        isTime = isTime / 3600;
+        reTime = {time:`${isTime}/h`};
+    }
+    else{reTime = {time:`${isTime}/s`};}
+    console.log(reTime)
 
     if (types > 0) {
         reTs = Math.floor((isTime/types)*10)/10; /* Aredondando para 1 casa dec */
-        if (reTs > 59) {
-            reTs = reTs / 60
-            reTs = {ts:`${reTs}/m`}
-        }
-        else if (reTs > 3600) {
-            reTs = reTs / 3600
-            reTs = {ts:`${reTs}/h`}
-        }
-        else {reTs = {ts:`${reTs}/s`}}
-        
-    }else {reTs = {ts:'0/s'}}
+        reTs = {ts:`${reTs}/s`}
+    }
+    else{reTs = {ts:`0/s`}}
 
     register.push(reScore,reTs,reTime)
     writerLocal('create','register',register)

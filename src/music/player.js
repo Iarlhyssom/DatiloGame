@@ -9,8 +9,9 @@ const defaultuiMusic = './local/uiMusics/Courage(8-Bit-Remix).mp3';
 //Função utilitária para permitir a pausa de 3 segundos
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
-export async function player(playlist) {    
-    let volume = readLocal('config','musicVolume')
+export async function player(playlist) {
+    let volumeAtual =  readLocal('tag','musicVolume');
+    let volume = volumeAtual[0]['musicVolume'];
     audioElement.volume = volume
 
     for (let i = 0; i < playlist.length; i++) {
@@ -56,7 +57,9 @@ export async function locateFile(caminho,type) {
 }
 
 export async function uiPlayer(command, music, loop = true) {
-    let volume = readLocal('config','musicVolume')
+    let volumeAtual = readLocal('tag','musicVolume')
+    let volume = volumeAtual[0]['musicVolume']
+
     audioElement.volume = volume
     audioElement.loop = loop;
     if (music != undefined && command != undefined) {

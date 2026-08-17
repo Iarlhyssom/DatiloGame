@@ -27,7 +27,7 @@ const jpButtonBack = document.getElementById("jp_buttonBack")
 
 const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
-const cgButtonSave = document.getElementById("cg_buttonSave")
+const cgButtonReload = document.getElementById("cg_buttonReload")
 const cgButtonBack = document.getElementById("cg_buttonBack")
 const musicVolElement = document.getElementById('musicVolume')
 
@@ -42,12 +42,7 @@ const buttonPlay = document.getElementById("play_button"); /* PREFS */
 //* Area de variaveis de temporarias *//
 
 let clicked = false;
-
-let config = undefined
-let paleta = undefined
-let uiMusic = undefined
-let preferences = undefined
-let nickName = {'nickName':jhNickName.value}
+let nickName, config, paleta, uiMusic, preferences;
 
 //* Area das Funcoes *//
 
@@ -114,14 +109,18 @@ function janelaPref(command){
     if (command === "show") {
         jpContainer.style.display = "flex"
         jpContainer.style.zIndex = "99"
-        writerLocal('update','dificuldade','FACIL')
-        writerLocal('update','playlist','default')
+        let janelaDefault = [{dificuldade:'FACIL'},{playlist:'default'}];
+
+        writerLocal('update',"preferences",janelaDefault);
 
         showElements(jpElements);
         jpButtonPlay.addEventListener('click', function(event) {
             janelaPref("hide")
             janelaHome("hide")
-            writerLocal('create','nickName',nickName)
+
+            let nickname = [{nickName:jhNickName.value}];
+            writerLocal('update','register',nickname)
+
             window.location.replace('./src/game/')
         });
         jpButtonBack.addEventListener('click', function(event) {
@@ -134,7 +133,8 @@ function janelaPref(command){
             }
         })
         jpDifSelect.addEventListener('change', function(event) {
-            writerLocal('update','dificuldade',event.target.value)
+            let theDificult = [{dificuldade:event.target.value}]
+            writerLocal('update','preferences',theDificult)
         })
     }
     else if (command === "hide") {
@@ -152,7 +152,7 @@ function janelaConfig(command){
         cgContainer.style.zIndex = "99"
         
         showElements(cgElements);
-        cgButtonSave.addEventListener('click', function(event) {
+        cgButtonReload.addEventListener('click', function(event) {
             /*Not Funtional */
             janelaConfig("hide")
         });
@@ -217,50 +217,36 @@ function toggleGame() {
 
 //* Janela Inicial *//
 
-if (localStorage.length === 0) {
-    let config = [
-        {musicVolume:0.6},
-        {efectVolume:0.6},
-        {uiMusicName:"default"}];
 
-    let paleta = {paletName:"default"};
+if (localStorage.length > 0) {
+    let volumeCache = readLocal("tag","musicVolume");
+    musicVolElement.value = volumeCache[0]["musicVolume"];
 
-    let preferences = [
-        {dificuldade:"FACIL"},
-        {playlist:"default"}]
+    let registro = readLocal('key','register')
 
-    let registro = [{nickName: "guest"}, {score: "0"}, {ts: "0/s"}, {time: "0/s"}]
+    if (Array.isArray(registro)) {
+        jhrankTable.querySelector('#primeiro')
+        .cells[1]
+        .textContent = registro[0]['nickName']
 
-    writerLocal("create","config",config)
-    writerLocal("create","paleta",paleta)
-    writerLocal("create","preferences",preferences)
-    writerLocal("create","register")
+        jhrankTable.querySelector('#primeiro')
+        .cells[2]
+        .textContent = registro[1]['score']
 
+        jhrankTable.querySelector('#primeiro')
+        .cells[3]
+        .textContent = registro[2]['ts']
+
+        jhrankTable.querySelector('#primeiro')
+        .cells[4]
+        .textContent = registro[3]['time']
+    }
+    
 }
-else {
-    musicVolElement.value = readLocal("config","musicVolume")
-    let registro = readLocal('register')
-    console.log(registro)
-    jhrankTable.querySelector('#primeiro')
-    .cells[1]
-    .textContent = registro[0]['nickName']
-
-    jhrankTable.querySelector('#primeiro')
-    .cells[2]
-    .textContent = registro[1]['score']
-
-    jhrankTable.querySelector('#primeiro')
-    .cells[3]
-    .textContent = registro[2]['ts']
-
-    jhrankTable.querySelector('#primeiro')
-    .cells[4]
-    .textContent = registro[3]['time']
-}
-
 
 janelaInicial('show')
-uiPlayer("play",readLocal('config',"uiMusicName"))
+let uiMusicselect = readLocal('tag',"uiMusicName")
+uiPlayer("play",uiMusicselect[0]["uiMusicName"])
 
 function contadorUpdate() {
     let loteinGame = document.querySelectorAll('.box-style');
@@ -272,6 +258,8 @@ function contadorUpdate() {
 contadorUpdate()
 
 musicVolElement.addEventListener('input', function(event){
-    writerLocal('update','musicVolume',event.target.value)
+    let volumeAtual = [{musicVolume:event.target.value}]
+    writerLocal('update','config',volumeAtual);
     audioElement.volume = event.target.value;
 })
+

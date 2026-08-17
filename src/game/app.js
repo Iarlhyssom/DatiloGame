@@ -5,7 +5,8 @@ import {writerLocal, readLocal} from "../manager/writer.js";
 const elementButton = document.querySelector('#tg_film #click')
 const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
-const cgButtonSave = document.getElementById("cg_buttonSave")
+const cgButtonReload = document.getElementById("cg_buttonReload")
+const cgButtonReload2 = document.getElementById("cg_buttonReload2")
 const cgButtonBack = document.getElementById("cg_buttonBack")
 const gameDiv = document.getElementById("gameDiv")
 
@@ -60,7 +61,8 @@ async function inicializar() {
     theConstrutor("game",10,120)
     
     /*Atualizando elementos da janela config */
-    musicVolElement.value = readLocal("config","musicVolume")
+    let volumeAtual = readLocal("tag","musicVolume")
+    musicVolElement.value = volumeAtual[0]["musicVolume"]
 
     // Aguarda a playlist ser carregada do JSON antes de entregar ao player
     const playlistReal = await locateFile(defaultPlaylist,'json');
@@ -84,18 +86,23 @@ elementButton.addEventListener('click', function(event) {
     /*REDIRECIONA PARA A PÁGINA HOME*/
     window.location.replace('../../index.html');
 });
+cgButtonReload2.addEventListener('click', function(event) {
+    location.reload();
+});
 
         
-cgButtonSave.addEventListener('click', function(event) {
+cgButtonReload.addEventListener('click', function(event) {
     janelaConfig("hide")
     gamePause();
+    location.reload();
 });
 cgButtonBack.addEventListener('click', function(event) {
     window.location.replace('../../index.html');
 });
 
 musicVolElement.addEventListener('input', function(event){
-    writerLocal('update','musicVolume',event.target.value)
+    let thisVolume = {musicVolume:event.target.value};
+    writerLocal('update','musicVolume',thisVolume)
     audioElement.volume = event.target.value;
 })
 
