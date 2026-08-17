@@ -259,7 +259,16 @@ function rankRegister() {
 
     if (types > 0) {
         reTs = Math.floor((isTime/types)*10)/10; /* Aredondando para 1 casa dec */
-        reTs = {ts:`${reTs}/s`}
+        if (reTs > 59) {
+            reTs = reTs / 60
+            reTs = {ts:`${reTs}/m`}
+        }
+        else if (reTs > 3600) {
+            reTs = reTs / 3600
+            reTs = {ts:`${reTs}/h`}
+        }
+        else {reTs = {ts:`${reTs}/s`}}
+        
     }else {reTs = {ts:'0/s'}}
 
     register.push(reScore,reTs,reTime)

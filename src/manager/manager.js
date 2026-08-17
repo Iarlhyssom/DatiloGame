@@ -229,9 +229,13 @@ if (localStorage.length === 0) {
         {dificuldade:"FACIL"},
         {playlist:"default"}]
 
+    let registro = [{nickName: "guest"}, {score: "0"}, {ts: "0/s"}, {time: "0/s"}]
+
     writerLocal("create","config",config)
     writerLocal("create","paleta",paleta)
     writerLocal("create","preferences",preferences)
+    writerLocal("create","register")
+
 }
 else {
     musicVolElement.value = readLocal("config","musicVolume")
