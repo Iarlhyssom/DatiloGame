@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../game/game.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="module" src="./dbManager.js"></script>
+</head>
+<body>
+    <div id="janela_pref" class="windowDiv">
+        <div id="jp_film" class="jp_element">
+            <div id="jp_capsule">
+                <div id="jp_container" class="jp_element">
+                    <h1>PREDEFINICÕES DE JOGO</h1>
+                    <div Id="div_dificult" class="jp_element">
+                        <P>DIFICULDADE</P>
+                        <select id="dificult_select">
+                            <option>FACIL</option>
+                            <option>NORMAL</option>
+                            <option>DIFICIL</option>
+                        </select>
+                    </div>
+                    <div id="div_playlist" class="jp_element">
+                        <P>ESCOLHA A PLAYLIST</P>
+                        <select id="playlist_select">
+                            <option>PLAYLIST PADRAO</option>
+                            <option>-- CRIAR NOVA PLAYLIST --</option>
+                        </select>
+                    </div>
+                    <div id="jp_buttonsDiv" class="jp_element">
+                        <button Id="jp_buttonPlay" className="button">Play</button>
+                        <button Id="jp_buttonBack" className="button">Voltar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="janela_makePlaylist" class="windowDiv">
+        <div id="jm_film" class="jm_element">
+            <div id="jm_capsule">
+                <div id="jm_container" class="jm_element">
+                    <h1>CRIAÇÃO DE PLAYLIST</h1>
+                    <div Id="div_playlistName" class="jm_element">
+                        <input type="text">
+                    </div>
+                    <div id="div_musics" class="jm_element">
+                        <label>minha musica</label>
+                        <button class="button">adicionar musica</button>
+                    </div>
+                    <div id="jm_buttonsDiv" class="jm_element">
+                        <button Id="jm_buttonSave" className="button">Salvar</button>
+                        <button Id="jm_buttonCancel" className="button">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
