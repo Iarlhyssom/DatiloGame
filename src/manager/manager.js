@@ -24,6 +24,12 @@ const jpElements = document.getElementsByClassName("jp_element")
 const jpDifSelect = document.getElementById("dificult_select")
 const jpButtonPlay = document.getElementById("jp_buttonPlay")
 const jpButtonBack = document.getElementById("jp_buttonBack")
+const jpPlaylistSelect = document.getElementById('playlist_select')
+
+const jmContainer = document.getElementById("janela_makePlaylist")
+const jmElements = document.getElementsByClassName("jm_element")
+const jmButtonSave = document.getElementById("jm_buttonSave")
+const jmButtonCancel = document.getElementById("jm_buttonCancel")
 
 const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
@@ -66,10 +72,20 @@ function janelaInicial(command){
         setInterval(gameINbackground, 999);
         observer('static')
 
-        jiContainer.addEventListener('click', function(event) {
+        // Listeners de entrada única (removem a si mesmos após o primeiro uso)
+        jiContainer.addEventListener('click', function catchMouse(event) {
             toggleGame()
             janelaInicial("hide")
             janelaHome("show")
+            uiPlayer("play",uiMusicselect[0]["uiMusicName"])
+            jiContainer.removeEventListener('click', catchMouse);
+        });
+        document.addEventListener('keydown', function catchAll(event) {
+            toggleGame()
+            janelaInicial("hide")
+            janelaHome("show")
+            uiPlayer("play",uiMusicselect[0]["uiMusicName"])
+            document.removeEventListener('keydown', catchAll);
         });
     }
     else if (command === "hide") {
@@ -86,15 +102,6 @@ function janelaHome(command){
     if (command === "show") {
         showElements(jhElements);
         jhContainer.style.display = "flex"
-        jhButton00.addEventListener('click', function(event) {
-            janelaPref("show")
-        });
-        jhButton01.addEventListener('click', function(event) {
-            //janelaPerso("show")
-        });
-        jhButton02.addEventListener('click', function(event) {
-            janelaConfig("show")
-        });
     }
     else if (command === "hide") {
         hideElements(jhElements);
@@ -112,30 +119,7 @@ function janelaPref(command){
         let janelaDefault = [{dificuldade:'FACIL'},{playlist:'default'}];
 
         writerLocal('update',"preferences",janelaDefault);
-
         showElements(jpElements);
-        jpButtonPlay.addEventListener('click', function(event) {
-            janelaPref("hide")
-            janelaHome("hide")
-
-            let nickname = [{nickName:jhNickName.value}];
-            writerLocal('update','register',nickname)
-
-            window.location.replace('./src/game/')
-        });
-        jpButtonBack.addEventListener('click', function(event) {
-            /*Not Funtional */
-            janelaPref("hide")
-        });
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape") {
-                janelaPref("hide")
-            }
-        })
-        jpDifSelect.addEventListener('change', function(event) {
-            let theDificult = [{dificuldade:event.target.value}]
-            writerLocal('update','preferences',theDificult)
-        })
     }
     else if (command === "hide") {
         hideElements(jpElements);
@@ -146,25 +130,27 @@ function janelaPref(command){
     }
 }
 
+function janelaMakePlaylist(command){
+    if (command === "show") {
+        console.warn('show')
+        jmContainer.style.display = "flex"
+        jmContainer.style.zIndex = "99"
+        showElements(jmElements);
+    }
+    else if (command === "hide") {
+        hideElements(jmElements);
+        jmContainer.style.display = "none"
+    }
+    else {
+        console.log(`func janelaPref >> commando string ${command} desconhecido`)
+    }
+}
+
 function janelaConfig(command){
     if (command === "show") {
         cgContainer.style.display = "flex"
         cgContainer.style.zIndex = "99"
-        
         showElements(cgElements);
-        cgButtonSave.addEventListener('click', function(event) {
-            /*Not Funtional */
-            janelaConfig("hide")
-        });
-        cgButtonBack.addEventListener('click', function(event) {
-            /*Not Funtional */
-            janelaConfig("hide")
-        });
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape") {
-                janelaConfig("hide")
-            }
-        })
     }
     else if (command === "hide") {
         hideElements(cgElements);
@@ -179,21 +165,7 @@ function janelaPerso(command){
     if (command === "show") {
         prContainer.style.display = "flex"
         prContainer.style.zIndex = "99"
-        
         showElements(prElements);
-        prButtonSave.addEventListener('click', function(event) {
-            /*Not Funtional */
-            janelaPerso("hide")
-        });
-        prButtonBack.addEventListener('click', function(event) {
-            /*Not Funtional */
-            janelaPerso("hide")
-        });
-        document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape") {
-                janelaPerso("hide")
-            }
-        });
     }
     else if (command === "hide") {
         hideElements(prElements);
@@ -215,8 +187,92 @@ function toggleGame() {
 }
 
 
-//* Janela Inicial *//
+// =============================
+// SEÇÃO UNIFICADA DE LISTENERS 
+// =============================
 
+// --- CLIQUES DA JANELA HOME ---
+jhButton00.addEventListener('click', function() { janelaPref("show"); });
+jhButton01.addEventListener('click', function() { /* janelaPerso("show") */ });
+jhButton02.addEventListener('click', function() { janelaConfig("show"); });
+
+// --- CLIQUES DA JANELA PREF ---
+jpButtonPlay.addEventListener('click', function() {
+    janelaPref("hide");
+    janelaHome("hide");
+    let nickname = [{nickName:jhNickName.value}];
+    writerLocal('update','register',nickname);
+    window.location.replace('./src/game/');
+});
+
+jpButtonBack.addEventListener('click', function() {
+    janelaPref("hide");
+});
+
+jpDifSelect.addEventListener('change', function(event) {
+    let theDificult = [{dificuldade:event.target.value}];
+    writerLocal('update','preferences',theDificult);
+});
+
+/*  DESATIVADO POR ENQUANTO.
+jpPlaylistSelect.addEventListener('change', function(event) {
+    let select = event.target.value;
+    if (select === '-- ADICIONAR PLAYLIST --') {
+        jpContainer.style.zIndex = "98";
+        janelaMakePlaylist('show');
+    }
+});
+*/
+
+// --- CLIQUES DA JANELA MAKE PLAYLIST ---
+jmButtonSave.addEventListener('click', function() {
+    // Código para salvar futura playlist
+});
+
+jmButtonCancel.addEventListener('click', function() {
+    jpContainer.style.zIndex = "99";
+    janelaMakePlaylist("hide");
+});
+
+// --- CLIQUES DA JANELA CONFIG ---
+cgButtonSave.addEventListener('click', function() { janelaConfig("hide"); });
+cgButtonBack.addEventListener('click', function() { janelaConfig("hide"); });
+
+// --- CLIQUES DA JANELA PERSO ---
+prButtonSave.addEventListener('click', function() { janelaPerso("hide"); });
+prButtonBack.addEventListener('click', function() { janelaPerso("hide"); });
+
+// --- GERENCIADOR GLOBAL DO BOTÃO ESCAPE ---
+// Identifica qual janela está aberta olhando o "display" e aplica a lógica certa
+document.addEventListener('keydown', function(event) {
+    if (event.key === "Escape") {
+        if (jmContainer.style.display === "flex") {
+            jpContainer.style.zIndex = "99";
+            janelaMakePlaylist("hide");
+        } 
+        else if (jpContainer.style.display === "flex") {
+            janelaPref("hide");
+        } 
+        else if (cgContainer.style.display === "flex") {
+            janelaConfig("hide");
+        } 
+        else if (prContainer.style.display === "flex") {
+            janelaPerso("hide");
+        }
+    }
+});
+
+// --- VOLUMES E CONFIGURAÇÕES DE AUDIO ---
+musicVolElement.addEventListener('input', function(event){
+    let volumeAtual = [{musicVolume:event.target.value}]
+    writerLocal('update','config',volumeAtual);
+    audioElement.volume = event.target.value;
+});
+
+
+// ==========================================
+// INICIALIZAÇÃO DO SISTEMA
+// ==========================================
 
 if (localStorage.length > 0) {
     let volumeCache = readLocal("tag","musicVolume");
@@ -225,41 +281,12 @@ if (localStorage.length > 0) {
     let registro = readLocal('key','register')
 
     if (Array.isArray(registro)) {
-        jhrankTable.querySelector('#primeiro')
-        .cells[1]
-        .textContent = registro[0]['nickName']
-
-        jhrankTable.querySelector('#primeiro')
-        .cells[2]
-        .textContent = registro[1]['score']
-
-        jhrankTable.querySelector('#primeiro')
-        .cells[3]
-        .textContent = registro[2]['ts']
-
-        jhrankTable.querySelector('#primeiro')
-        .cells[4]
-        .textContent = registro[3]['time']
+        jhrankTable.querySelector('#primeiro').cells[1].textContent = registro[0]['nickName'];
+        jhrankTable.querySelector('#primeiro').cells[2].textContent = registro[1]['score'];
+        jhrankTable.querySelector('#primeiro').cells[3].textContent = registro[2]['ts'];
+        jhrankTable.querySelector('#primeiro').cells[4].textContent = registro[3]['time'];
     }
-    
 }
 
-janelaInicial('show')
-let uiMusicselect = readLocal('tag',"uiMusicName")
-uiPlayer("play",uiMusicselect[0]["uiMusicName"])
-
-function contadorUpdate() {
-    let loteinGame = document.querySelectorAll('.box-style');
-    let elementContador = document.getElementById('contador');
-
-    elementContador.innerText = loteinGame.length
-    setInterval(contadorUpdate,3000)
-}
-contadorUpdate()
-
-musicVolElement.addEventListener('input', function(event){
-    let volumeAtual = [{musicVolume:event.target.value}]
-    writerLocal('update','config',volumeAtual);
-    audioElement.volume = event.target.value;
-})
-
+janelaInicial('show');
+let uiMusicselect = readLocal('tag',"uiMusicName");

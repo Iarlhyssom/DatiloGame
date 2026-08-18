@@ -551,3 +551,90 @@ label {
     background-color: #070707;
     color: white;
 }
+
+#jm_film {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 9999;
+
+    /* Transforma a película inteira em um centralizador universal */
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+#jm_capsule {
+    /* Ativa o flexbox para repassar a centralização para o container */
+    justify-content: center;
+    align-items: center;
+    
+    /* Controla o tamanho da caixinha na tela de forma responsiva */
+    width: 90%;
+    max-width: 380px; 
+    height: 50%;
+}
+
+#jm_container {
+    font-family: 'Times New Roman', Times, serif !important;
+    background-color: #000000;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    
+    width: 100%;
+    height: 100%;
+    padding: 30px 20px;
+    border-radius: 8px;
+    border: 1px solid #333333;
+    box-sizing: border-box;
+}
+
+#jm_buttonsDiv {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;            /* Espaço fixo entre os dois botões */
+    justify-content: center;
+    width: 100%;          
+    max-width: 280px;     /* DEIXE IGUAL AO DO SELECT (ex: 280px) para alinhar perfeitamente */
+    box-sizing: border-box;
+}
+
+/* Os botões agora vão respeitar a largura máxima do bloco pai */
+#jm_container button {
+    flex: 1;              /* Faz os dois botões dividirem o espaço de 280px igualmente */
+    max-width: 130px;     /* Impede que fiquem grandes demais se a tela esticar */
+    padding: 8px 12px;  
+    font-size: 14px;    
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+#janela_makePlaylist {
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 5px;
+    border: 2px solid #858080;
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.jm_element p {
+    color: #ffffff;
+    font-size: 0.85rem;
+    margin: 0 0 8px 0;
+    
+    /* --- MUDANÇAS AQUI --- */
+    text-align: left;    /* Alinha o texto para a esquerda */
+    width: 100%;         /* Ocupa a largura total para fixar o início na borda */
+}

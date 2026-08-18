@@ -1,10 +1,3 @@
-const jpContainer = document.getElementById("janela_pref");
-const jpFilm = document.getElementById("jp_film");
-
-const jmContainer = document.getElementById("janela_makePlaylist");
-const jmFilm = document.getElementById("jm_film");
-
-const jpplaySelect = document.getElementById("playlist_select");
 
 /**
  * Inicia a conexão com o banco de dados e cria a tabela no IndexedDB se ela não existir.
@@ -12,7 +5,7 @@ const jpplaySelect = document.getElementById("playlist_select");
  * @param {number} VERSAO - Versão atual do banco
  * @param {string} TABELA - Nome do object store (tabela)
  */
-function abrirBanco(NOME_BANCO, VERSAO, TABELA) {
+export function abrirBanco(NOME_BANCO, VERSAO, TABELA) {
     // 1. Cria uma "Promessa" (garante que vai avisar se deu certo [resolve] ou errado [reject])
     return new Promise((resolve, reject) => {
       
@@ -31,10 +24,19 @@ function abrirBanco(NOME_BANCO, VERSAO, TABELA) {
                 // 6. Se não existir, cria a tabela definindo que a propriedade 'id' dos objetos será a chave primária
                 db.createObjectStore(TABELA, { keyPath: "id" });
             }
+            evento.target.transaction.oncomplete = function() {
+                resolve(db);
+            };
         }; // 7. Fecha o alarme de atualização
 
         // 8. ALARME: Se o banco abriu com sucesso, avisa a Promessa que deu certo e entrega a conexão pronta
-        request.onsuccess = () => resolve(request.result);
+        request.onsuccess = () => {
+            // Só faz o resolve aqui se o onupgradeneeded NÃO tiver sido disparado
+            // (Evita disparar o resolve duas vezes)
+            if (request.result.objectStoreNames.contains(TABELA)) {
+                resolve(request.result);
+            }
+        };
         
         // 9. ALARME: Se o banco deu erro ao abrir, avisa a Promessa que falhou e entrega o motivo do erro
         request.onerror = () => reject(request.error);
@@ -48,7 +50,7 @@ function abrirBanco(NOME_BANCO, VERSAO, TABELA) {
  * @param {string} TABELA - Nome do object store (tabela)
  * @param {Object} ITEM - Objeto JavaScript que será salvo (deve conter a propriedade 'id')
  */
-async function addInDB(NOME_BANCO, VERSAO, TABELA, ITEM) {
+export async function addInDB(NOME_BANCO, VERSAO, TABELA, ITEM) {
   // Abre o banco usando a função assíncrona baseada em Promises
   abrirBanco(NOME_BANCO, VERSAO, TABELA)
     .then((db) => {
@@ -74,7 +76,7 @@ async function addInDB(NOME_BANCO, VERSAO, TABELA, ITEM) {
  * @param {string} TABELA - Nome do object store (tabela)
  * @param {string|number} Key - A chave primária (id) do registro que será deletado
  */
-async function deleteDBKey(NOME_BANCO, VERSAO, TABELA, Key) {
+export async function deleteDBKey(NOME_BANCO, VERSAO, TABELA, Key) {
   try {
     // 1. Abre o banco de dados dinamicamente aguardando a resposta da Promise
     const db = await abrirBanco(NOME_BANCO, VERSAO, TABELA);
@@ -111,7 +113,7 @@ async function deleteDBKey(NOME_BANCO, VERSAO, TABELA, Key) {
  * @param {string} CAMPO_ID_INTERNO - A propriedade de identificação dentro do array (ex: 'numero', 'id')
  * @param {any} REF - O valor do identificador do item que deve ser removido
  */
-async function deleteDBValue(NOME_BANCO, VERSAO, TABELA, Key, NOME_ARRAY, CAMPO_ID_INTERNO, REF) {
+export async function deleteDBValue(NOME_BANCO, VERSAO, TABELA, Key, NOME_ARRAY, CAMPO_ID_INTERNO, REF) {
   try {
     // 1. Abre o banco de dados dinamicamente usando os parâmetros fornecidos
     const db = await abrirBanco(NOME_BANCO, VERSAO, TABELA);
@@ -153,6 +155,59 @@ async function deleteDBValue(NOME_BANCO, VERSAO, TABELA, Key, NOME_ARRAY, CAMPO_
   }
 }
 
+/**
+ * Adiciona um novo item dentro de um array interno de qualquer objeto salvo no IndexedDB.
+ * @param {string} NOME_BANCO - Nome do seu banco de dados
+ * @param {number} VERSAO - Versão atual do banco
+ * @param {string} TABELA - Nome do object store (tabela)
+ * @param {string|number} Key - A chave primária do registro pai que contém a lista
+ * @param {string} NOME_ARRAY - O nome da propriedade que guarda o array (ex: 'musicas', 'filhos')
+ * @param {Object} NOVO_ITEM - O novo objeto/item que será inserido dentro desse array
+ */
+export async function addDBValue(NOME_BANCO, VERSAO, TABELA, Key, NOME_ARRAY, NOVO_ITEM) {
+  try {
+    // 1. Abre o banco de dados dinamicamente usando os parâmetros fornecidos
+    const db = await abrirBanco(NOME_BANCO, VERSAO, TABELA);
+    
+    const transacao = db.transaction(TABELA, 'readwrite');
+    const store = transacao.objectStore(TABELA);
+
+    // 2. Cria uma requisição para buscar o registro pai pela chave primária (Key)
+    const requisicaoBusca = store.get(Key);
+
+    // 3. Executa o bloco abaixo quando o registro pai for encontrado com sucesso
+    requisicaoBusca.onsuccess = (evento) => {
+      const registroPai = evento.target.result;
+
+      // 4. Verifica se o registro pai existe
+      if (registroPai) {
+        
+        // 5. Se o array interno ainda não existir no objeto, inicializa ele como um array vazio []
+        if (!registroPai[NOME_ARRAY]) {
+          registroPai[NOME_ARRAY] = [];
+        }
+
+        // 6. Insere o novo item no final da lista usando o .push()
+        registroPai[NOME_ARRAY].push(NOVO_ITEM);
+
+        // 7. Grava o objeto pai modificado de volta na tabela, substituindo a versão antiga (.put)
+        const requisicaoAtualizar = store.put(registroPai);
+
+        // 8. Confirma no console quando a alteração for persistida com sucesso
+        requisicaoAtualizar.onsuccess = () => {
+          console.log(`Novo item adicionado na lista '${NOME_ARRAY}' com sucesso!`);
+        };
+        
+      } else {
+        console.log(`Registro pai com a chave '${Key}' não foi encontrado.`);
+      }
+    };
+
+  } catch (erro) {
+    console.error("Erro genérico ao processar adição:", erro);
+  }
+}
+
 // Objeto de teste representando a estrutura de uma playlist
 const novaPlaylist = {
   id: "playlist-rock-iarlhy",
@@ -169,31 +224,121 @@ const novaPlaylist = {
     }
   ]
 };
+// FUNÇOES ESPECIFICAS DO PROJETO ..
 
-// Definição das variáveis de configuração do banco de dados para os testes abaixo
-let nomeDB = 'datiloDB';
-let versao = 1;
-let table = 'playlists';
+export async function addRanking(REGISTER) {
+  const banco = 'datiloDB';
+  const table = 'ranking';
+  const chave = 'rankinglist';
+  const db = await abrirBanco(banco,1,table);
+  const trade = db.transaction(table,'readwrite');
+  const store = trade.objectStore(table);
+  const requisicaoBusca = store.get(chave);
 
-// Executa a função para inserir a playlist de teste no banco
-addInDB(nomeDB, versao, table, novaPlaylist);
-
-// Altera a estilização dos elementos da interface para exibi-los na tela
-jpContainer.style.display = "flex";
-jpFilm.style.display = "flex";
-
-// Executa o teste de remoção da música número 1 da playlist recém-criada
-deleteDBValue(nomeDB, versao, table, "playlist-rock-iarlhy", 'musicas', 'numero', '1');
-
-// Monitora o elemento select da interface para identificar quando o usuário deseja criar uma nova playlist
-jpplaySelect.addEventListener('change', function(event) {
-    let select = event.target.value;
-
-    // Se a opção selecionada for a de criação, ajusta as camadas (zIndex) e exibe as janelas modais correspondentes
-    if (select === '-- CRIAR NOVA PLAYLIST --') {
-        jpContainer.style.zIndex = 97;
-        jmContainer.style.zIndex = 99;
-        jmContainer.style.display = "flex";
-        jmFilm.style.display = "flex";
+  requisicaoBusca.onsuccess = (evento) => {
+    let object = evento.target.result;
+    let target = object['register'];
+    let newList = [];
+    console.log('velho ',object);
+    for (let i = 0; i < target.length; i++) {
+      let log = target[i]
+      console.log(log)
+      if (log['nome'] === REGISTER['nome']) {
+        console.log('igual')
+        if (REGISTER['score'] > log['score']) {
+          console.log('é maior')
+          console.log('log removido ',log)
+          newList.push(REGISTER)
+        }
+        else {
+          newList.push(log)
+        }
+      }
+      else {
+        newList.push(log)
+      }
     }
-});
+    if (target.length < 10){
+      newList.push(REGISTER)
+    }
+    else {
+      let decimo = target[9]
+      if (REGISTER['score'] > decimo['score']) {
+        newList.push(REGISTER)
+      }
+    }
+    
+    newList.sort((a, b) => b.score - a.score);
+    object['register'] = newList
+    console.log('novo ',object)
+    deleteDBKey(banco,1,table,chave)
+    addInDB(banco,1,table,object)
+  }
+}
+
+export async function readRanking() {
+  const banco = 'datiloDB';
+  const table = 'ranking';
+  const chave = 'rankinglist';
+  const db = await abrirBanco(banco, 1, table);
+  const trade = db.transaction(table, 'readwrite');
+  const store = trade.objectStore(table);
+  const requisicaoBusca = store.get(chave);
+
+  return new Promise((resolve, reject) => {
+    requisicaoBusca.onsuccess = (evento) => {
+      let object = evento.target.result;
+      
+      if (object && object['register']) {
+        resolve(object['register']);
+      } else {
+        resolve("Nenhum registro encontrado"); 
+      }
+    };
+
+    requisicaoBusca.onerror = (evento) => {
+      reject("Erro ao ler o banco de dados");
+    };
+  });
+}
+/*
+let rankinglist = {
+  id:'rankinglist',
+  register: [
+    {
+      data:'20260818',
+      nome:'joao',
+      score:211, //3
+      ts:'1/s',
+      time:'8.8/s'
+    },
+    {
+      data:'20260818',
+      nome:'maria',
+      score:212, //2
+      ts:'1/s',
+      time:'8.8/s'
+    },
+    {
+      data:'20260818',
+      nome:'pedro',
+      score:213, //1
+      ts:'1/s',
+      time:'8.8/s'
+    }
+  ]
+}
+*/
+//addInDB('datiloDB',1,'ranking',rankinglist)
+
+/*
+let registro = {
+  data:'20260816',
+  nome:'renato',
+  score:214, //1
+  ts:'1/s',
+  time:'8.8/s'
+}
+*/
+//addRanking(registro)
+
