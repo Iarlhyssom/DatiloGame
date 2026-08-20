@@ -260,14 +260,14 @@ export function newDificult(dif,vpx,sco) { /*dificuldade, velocidade px/s, score
 
 function rankRegister() {
     if (reStatus === true) {return};
-    let register = [name]
+    let register = [name];
     console.log(name)
-    let interval = (Date.now())-timeStart
+    let interval = (Date.now())-timeStart;
     let reScore = {score:score};
     let isTime = (interval/1000);
     let reTs,reTime;
     console.log(isTime)
-    isTime = isTime.toFixed(1)
+    isTime = isTime.toFixed(1);
     
     if (isTime > 59) {
         isTime = isTime / 60;

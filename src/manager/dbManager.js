@@ -225,6 +225,14 @@ const novaPlaylist = {
   ]
 };
 // FUNÇOES ESPECIFICAS DO PROJETO ..
+export async function initRanking(){
+  const rankBlank = {
+  id:'rankinglist',
+  register: []
+  }
+  addInDB('datiloDB',1,'ranking',rankBlank)
+  console.log('ranking iniciado [vazio]')
+}
 
 export async function addRanking(REGISTER) {
   const banco = 'datiloDB';
@@ -238,41 +246,48 @@ export async function addRanking(REGISTER) {
   requisicaoBusca.onsuccess = (evento) => {
     let object = evento.target.result;
     let target = object['register'];
-    let newList = [];
-    console.log('velho ',object);
-    for (let i = 0; i < target.length; i++) {
-      let log = target[i]
-      console.log(log)
-      if (log['nome'] === REGISTER['nome']) {
-        console.log('igual')
-        if (REGISTER['score'] > log['score']) {
-          console.log('é maior')
-          console.log('log removido ',log)
-          newList.push(REGISTER)
+    let newList = [...target, REGISTER];
+
+    // 1. CONSOLIDANDO DADOS SE DUPLICADOS
+    let listaConsolidada = [];
+    for (let i = 0; i < newList.length; i++) {
+      let mesmoNome = [];
+      let item1 = newList[i];
+      mesmoNome.push(item1);
+
+      for (let t = i + 1; t < newList.length; t++) {
+        let item2 = newList[t];
+        if (item2['nome'] === item1['nome']) {
+          mesmoNome.push(item2);
+          newList.splice(t, 1);
+          t--;
         }
-        else {
-          newList.push(log)
-        }
       }
-      else {
-        newList.push(log)
-      }
-    }
-    if (target.length < 10){
-      newList.push(REGISTER)
-    }
-    else {
-      let decimo = target[9]
-      if (REGISTER['score'] > decimo['score']) {
-        newList.push(REGISTER)
+
+      if (mesmoNome.length > 1) {
+        // Escolhe o registro com o MAIOR SCORE. Se empatar, pega o mais RECENTE.
+        mesmoNome.sort((a, b) => b.score - a.score || new Date(b.data) - new Date(a.data));
+        listaConsolidada.push(mesmoNome[0]);
+      } else {
+        listaConsolidada.push(item1);
       }
     }
-    
-    newList.sort((a, b) => b.score - a.score);
-    object['register'] = newList
-    console.log('novo ',object)
-    deleteDBKey(banco,1,table,chave)
-    addInDB(banco,1,table,object)
+    newList = listaConsolidada;
+
+    // 2. ORDENAÇÃO DO RANKING GLOBAL (Mais pontos primeiro -> Mais recentes primeiro)
+    newList.sort((a, b) => b.score - a.score || new Date(b.data) - new Date(a.data));
+
+    // 3. MANTENDO O LIMITE DE 10 REGISTROS
+    if (newList.length > 10) {
+      newList.length = 10;
+    }
+
+    // Salva e atualiza o banco
+    object['register'] = newList;
+    console.log('Novo ranking consolidado: ', object);
+
+    deleteDBKey(banco, 1, table, chave);
+    addInDB(banco, 1, table, object);
   }
 }
 

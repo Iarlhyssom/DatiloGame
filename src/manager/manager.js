@@ -186,7 +186,6 @@ function toggleGame() {
     clicked = !clicked;
 }
 
-
 // =============================
 // SEÇÃO UNIFICADA DE LISTENERS 
 // =============================
@@ -269,7 +268,6 @@ musicVolElement.addEventListener('input', function(event){
     audioElement.volume = event.target.value;
 });
 
-
 // ==========================================
 // INICIALIZAÇÃO DO SISTEMA
 // ==========================================
@@ -278,7 +276,7 @@ if (localStorage.length > 0) {
     let volumeCache = readLocal("tag","musicVolume");
     musicVolElement.value = volumeCache[0]["musicVolume"];
 
-    let registro = readLocal('key','register')
+    let registro = readLocal('key','register');
 
     if (Array.isArray(registro)) {
         jhrankTable.querySelector('#primeiro').cells[1].textContent = registro[0]['nickName'];
