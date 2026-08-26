@@ -1,4 +1,5 @@
 import {writerLocal, readLocal, createLocals} from "../manager/writer.js"
+import {addRanking, abrirBanco, initRanking} from "../manager/dbManager.js"
 
 const elementFilm = document.querySelector('#tg_film')
 const elementEndScore = document.querySelector('#tg_film #endScore')
@@ -260,14 +261,16 @@ export function newDificult(dif,vpx,sco) { /*dificuldade, velocidade px/s, score
 
 function rankRegister() {
     if (reStatus === true) {return};
+    const dateUTC_br = 10800000;
     let register = [name];
-    console.log(name)
     let interval = (Date.now())-timeStart;
     let reScore = {score:score};
     let isTime = (interval/1000);
     let reTs,reTime;
-    console.log(isTime)
     isTime = isTime.toFixed(1);
+
+    let dateUTC = (new Date()).getTime()
+    let isDate = dateUTC - dateUTC_br
     
     if (isTime > 59) {
         isTime = isTime / 60;
@@ -278,7 +281,6 @@ function rankRegister() {
         reTime = {time:`${isTime}/h`};
     }
     else{reTime = {time:`${isTime}/s`};}
-    console.log(reTime)
 
     if (types > 0) {
         reTs = Math.floor((isTime/types)*10)/10; /* Aredondando para 1 casa dec */
@@ -288,5 +290,14 @@ function rankRegister() {
 
     register.push(reScore,reTs,reTime)
     writerLocal('create','register',register)
+
+
+
+    register = {data:isDate, nome:namecache[0]['nickName'],
+         score:reScore['score'], ts:reTs['ts'], time:reTime['time']};
     reStatus = true;
+
+    addRanking(register);
+    
+    //{data: 1787236662468, nome: 'jao', score: 999, ts: '1/s', time: '8.8/s'}
 }

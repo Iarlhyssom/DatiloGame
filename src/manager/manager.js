@@ -2,6 +2,7 @@
 import { observer, observerLoop, isVisibleList, theConstrutor } from "../game/game.js";
 import { writerLocal, readLocal } from "./writer.js"
 import { uiPlayer, playerController } from "../music/player.js";
+import { readRanking } from "./dbManager.js";
 
 //* Area de variaveis de elementos *//
 const bodyArray = document.getElementsByClassName("windowDiv") /* Array com as Janelas do Index */
@@ -186,6 +187,21 @@ function toggleGame() {
     clicked = !clicked;
 }
 
+async function carregarRanking(){
+    try{
+        const ranking = await readRanking()
+        console.log(ranking)
+        for (let i = 0; i < ranking.length; i++){
+            jhrankTable.querySelector(`#rank${i}`).cells[1].textContent = ranking[i]['nome']
+            jhrankTable.querySelector(`#rank${i}`).cells[2].textContent = ranking[i]['score']
+            jhrankTable.querySelector(`#rank${i}`).cells[3].textContent = ranking[i]['ts']
+            jhrankTable.querySelector(`#rank${i}`).cells[4].textContent = ranking[i]['time']
+        }
+    } catch {
+        console.warn('erro ao carregar o Ranking.')
+    }
+}
+
 // =============================
 // SEÇÃO UNIFICADA DE LISTENERS 
 // =============================
@@ -275,15 +291,16 @@ musicVolElement.addEventListener('input', function(event){
 if (localStorage.length > 0) {
     let volumeCache = readLocal("tag","musicVolume");
     musicVolElement.value = volumeCache[0]["musicVolume"];
-
+    carregarRanking()
+/*
     let registro = readLocal('key','register');
-
     if (Array.isArray(registro)) {
         jhrankTable.querySelector('#primeiro').cells[1].textContent = registro[0]['nickName'];
         jhrankTable.querySelector('#primeiro').cells[2].textContent = registro[1]['score'];
         jhrankTable.querySelector('#primeiro').cells[3].textContent = registro[2]['ts'];
         jhrankTable.querySelector('#primeiro').cells[4].textContent = registro[3]['time'];
     }
+*/
 }
 
 janelaInicial('show');
