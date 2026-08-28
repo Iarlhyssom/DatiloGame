@@ -1,5 +1,6 @@
 import {writerLocal, readLocal, createLocals} from "../manager/writer.js"
 import {addRanking, abrirBanco, initRanking} from "../manager/dbManager.js"
+import { changeStyleColor } from "../manager/functions.js"
 
 const elementFilm = document.querySelector('#tg_film')
 const elementEndScore = document.querySelector('#tg_film #endScore')
@@ -15,6 +16,9 @@ let combo = 0
 let score = 0
 let prefs = readLocal("key","preferences")
 let namecache = readLocal("tag",'nickName')
+let styleColor = readLocal("key","styleColor")
+
+changeStyleColor(styleColor);
 
 if (!namecache || !prefs){
     createLocals()

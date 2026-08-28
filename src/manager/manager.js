@@ -1,7 +1,8 @@
 //* Area de importação *//
 import { observer, observerLoop, isVisibleList, theConstrutor } from "../game/game.js";
 import { writerLocal, readLocal } from "./writer.js"
-import { uiPlayer, playerController } from "../music/player.js";
+import { uiPlayer} from "../music/player.js";
+import { changeStyleColor } from "./functions.js";
 import { readRanking } from "./dbManager.js";
 
 //* Area de variaveis de elementos *//
@@ -41,15 +42,19 @@ const musicVolElement = document.getElementById('musicVolume')
 const prContainer = document.getElementById("janela_perso")
 const prElements = document.getElementsByClassName("pr_element")
 const prButtonSave = document.getElementById("pr_buttonSave")
+const prButtonApply = document.getElementById("pr_buttonApply")
 const prButtonBack = document.getElementById("pr_buttonBack")
-
-
+const prPaletteBG = document.getElementById("paletaBackground")
+const prPaletteBorder = document.getElementById("paletaBorder")
+const prPaletteButton = document.getElementById("paletaButtons")
+const prPaletteText = document.getElementById("paletaText")
 const buttonPlay = document.getElementById("play_button"); /* PREFS */
 
 //* Area de variaveis de temporarias *//
 
 let clicked = false;
-let nickName, config, paleta, uiMusic, preferences;
+
+let styleColor = readLocal("key","styleColor")
 
 //* Area das Funcoes *//
 
@@ -202,13 +207,24 @@ async function carregarRanking(){
     }
 }
 
+function saveColor (cor, variavel) {
+    styleColor[variavel] = cor
+}
+
+function paletteUpdate () {
+    prPaletteBG.value = styleColor['bg-color']
+    prPaletteBorder.value = styleColor['border-color']
+    prPaletteButton.value = styleColor['button-bg']
+    prPaletteText.value = styleColor['text-color']
+}
+
 // =============================
 // SEÇÃO UNIFICADA DE LISTENERS 
 // =============================
 
 // --- CLIQUES DA JANELA HOME ---
 jhButton00.addEventListener('click', function() { janelaPref("show"); });
-jhButton01.addEventListener('click', function() { /* janelaPerso("show") */ });
+jhButton01.addEventListener('click', function() { janelaPerso("show"); });
 jhButton02.addEventListener('click', function() { janelaConfig("show"); });
 
 // --- CLIQUES DA JANELA PREF ---
@@ -229,7 +245,6 @@ jpDifSelect.addEventListener('change', function(event) {
     writerLocal('update','preferences',theDificult);
 });
 
-/*  DESATIVADO POR ENQUANTO.
 jpPlaylistSelect.addEventListener('change', function(event) {
     let select = event.target.value;
     if (select === '-- ADICIONAR PLAYLIST --') {
@@ -237,7 +252,6 @@ jpPlaylistSelect.addEventListener('change', function(event) {
         janelaMakePlaylist('show');
     }
 });
-*/
 
 // --- CLIQUES DA JANELA MAKE PLAYLIST ---
 jmButtonSave.addEventListener('click', function() {
@@ -254,8 +268,29 @@ cgButtonSave.addEventListener('click', function() { janelaConfig("hide"); });
 cgButtonBack.addEventListener('click', function() { janelaConfig("hide"); });
 
 // --- CLIQUES DA JANELA PERSO ---
-prButtonSave.addEventListener('click', function() { janelaPerso("hide"); });
+prButtonSave.addEventListener('click', function() { 
+    changeStyleColor(styleColor)
+    writerLocal('create','styleColor',styleColor)
+    janelaPerso("hide"); 
+});
+prButtonApply.addEventListener('click', function() { 
+    changeStyleColor(styleColor)
+});
 prButtonBack.addEventListener('click', function() { janelaPerso("hide"); });
+
+// --- PALETAS DE CORES JANELA PERSO ---
+prPaletteBG.addEventListener('change', function(){
+    saveColor(this.value,'bg-color');
+});
+prPaletteBorder.addEventListener('change', function(){
+    saveColor(this.value,'border-color');
+});
+prPaletteButton.addEventListener('change', function(){
+    saveColor(this.value,'button-bg');
+});
+prPaletteText.addEventListener('change', function(){
+    saveColor(this.value,'text-color');
+});
 
 // --- GERENCIADOR GLOBAL DO BOTÃO ESCAPE ---
 // Identifica qual janela está aberta olhando o "display" e aplica a lógica certa
@@ -303,5 +338,7 @@ if (localStorage.length > 0) {
 */
 }
 
+changeStyleColor(styleColor);
+paletteUpdate();
 janelaInicial('show');
 let uiMusicselect = readLocal('tag',"uiMusicName");

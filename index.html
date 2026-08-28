@@ -166,7 +166,7 @@
                         </div>
                         <div id="pr_buttonsDiv" class="pr_element">
                             <button Id="pr_buttonSave" className="button">Salvar</button>
-                            <button Id="pr_buttonSave" className="button">Aplicar</button>
+                            <button Id="pr_buttonApply" className="button">Aplicar</button>
                             <button Id="pr_buttonBack" className="button">Voltar</button>
                         </div>
                     </div>
@@ -228,11 +228,16 @@
                 <div id="jm_container" class="jm_element">
                     <h1>CRIAÇÃO DE PLAYLIST</h1>
                     <div Id="div_playlistName" class="jm_element">
+                        <p>Nome da Playlist</p>
                         <input type="text">
                     </div>
                     <div id="div_musics" class="jm_element">
-                        <label>minha musica</label>
-                        <button class="button">adicionar musica</button>
+                        <div id="musics-list" class="jm_element">
+                            <label class="musicNames">minha musica</label>
+                        </div>
+                        <div class="jm_element">
+                            <input type="file" accept="audio/*">
+                        </div>
                     </div>
                     <div id="jm_buttonsDiv" class="jm_element">
                         <button Id="jm_buttonSave" className="button">Salvar</button>

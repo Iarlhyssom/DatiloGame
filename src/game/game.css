@@ -1,21 +1,49 @@
-body {
-    background-color: #000000;
+/* ================= VARIÁVEIS DE TEMA (PALETA DE CORES) ================= */
+:root {
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --border-color: #858080;
+    --button-bg: #000000;
+    --shadowText: #000000;
+}
+
+/* ================= ESTRUTURA BASE ================= */
+body, #gameBody {
+    background-color: var(--bg-color);
     margin: 0;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
     position: relative;
     display: flex;
+}
+
+body {
     flex-direction: row;
 }
 
+#gameBody {
+    justify-content: center;
+    align-items: center;
+}
+
+#gameBody #gameDiv {
+    position: relative;
+    width: 80vw;
+    height: 80vh;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-sizing: border-box;
+}
+
+/* ================= ANIMAÇÕES E CAIXAS ================= */
 .box-style {
     position: absolute;
     width: 30px;
     height: 30px;
     background-color: #070707;
-    color: white;
-    border: 1px solid #f7f8f7;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 14px;
     font-family: sans-serif;
@@ -33,33 +61,252 @@ body {
     transition: none !important;
 }
 
-#ji_film {
-    background-color: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+#gameBody #gameDiv .box-style {
+    animation-name: dropAnim80;
+}
+
+@keyframes dropAnim100 { to { top: 100vh; } }
+@keyframes dropAnim80 { to { top: calc(100% - 30px); } }
+@keyframes pulsar { 50% { opacity: 5%; } }
+
+/* ================= FILMES (OVERLAYS) ================= */
+#ji_film, #tg_film, #jp_film, #cg_film, #pr_film, #jm_film {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
     display: none;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+#jp_film, #cg_film, #pr_film, #jm_film {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+}
+
+#ji_film, #tg_film {
+    background-color: rgba(0, 0, 0, 0.1);
     gap: 10px;
+}
+
+#ji_film {
     z-index: 98;
 }
 
-#contDiv {
-    display: flex;
+/* ================= CÁPSULAS ================= */
+#jp_capsule, #cg_capsule, #pr_capsule, #jm_capsule {
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 380px;
+    height: 50%;
 }
+
+/* ================= CONTAINERS ================= */
+#jp_container, #cg_container, #pr_container {
+    font-family: 'Times New Roman', Times, serif !important;
+    background-color: var(--bg-color);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+    padding: 30px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-sizing: border-box;
+}
+
+#jm_container {
+    font-family: 'Times New Roman', Times, serif !important;
+    background-color: var(--bg-color);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+    padding: 30px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-sizing: border-box;
+}
+
+#div_playlistName {
+    display: flex;
+    flex-direction: column;
+}
+
+#div_musics {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-color: var(--border-color);
+}
+
+
+
+
+/* ================= ELEMENTOS E FORMULÁRIOS ================= */
+.jp_element p, .jm_element p {
+    color: var(--text-color);
+    font-size: 0.85rem;
+    margin: 0 0 8px 0;
+    text-align: left;
+    width: 100%;
+}
+
+#div_dificult, #div_playlist {
+    width: 100%;
+    max-width: 280px;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+#div_dificult select, #div_playlist select {
+    width: 100%;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+#jp_buttonsDiv, #jm_buttonsDiv {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    justify-content: center;
+    width: 100%;
+    max-width: 280px;
+    box-sizing: border-box;
+}
+
+/* ================= JANELAS COMUNS ================= */
+#janela_Pref, #janela_makePlaylist, #janela_config {
+    display: none;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-radius: 5px;
+    border: 2px solid var(--border-color);
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ================= INTERFACE E BOTÕES ================= */
+button, #button00, #endScoreUi {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 2px solid var(--border-color);
+}
+
+button {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    padding: 12px 20px;
+    width: 100%;
+    max-width: 200px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+#jp_container button, #jm_container button {
+    flex: 1;
+    max-width: 130px;
+    padding: 8px 12px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+#button00 {
+    justify-content: center;
+    padding: 10px 20px;
+    display: none;
+    animation: pulsar 3s infinite;
+}
+
+#endScoreUi {
+    padding: 10px 20px;
+}
+
+#middleDiv #newGameButton {
+    animation: pulsar 0.9s infinite;
+}
+
+/* ================= PAINÉIS LATERAIS E RANKING ================= */
+#ranking, #imageDiv {
+    width: 90%;
+    height: 80%;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
+    margin-bottom: 80px;
+    display: none;
+}
+
+#ranking {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+#rankingCapsule {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ranking-table th, .ranking-table td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1163px) {
+    #rankingCapsule { overflow-x: auto; }
+    .ranking-table { min-width: 500px; }
+}
+
+@media (max-height: 500px) {
+    #rankingCapsule {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+}
+
+/* ================= ELEMENTOS AVULSOS ================= */
+#contDiv { display: flex; }
 
 #contador {
     margin-top: auto;
     position: relative;
     z-index: 99;
     color: rgba(255, 255, 255, 0.2);
-    
 }
 
 #nicknameDiv {
@@ -74,46 +321,20 @@ body {
     -webkit-appearance: none;
     appearance: none;
     box-sizing: border-box;
-
-    background-color: hsl(0, 7%, 97%);
-    
-    width: 100%;          
-    max-width: 200px;     
-
-    color: #000000;
-    font-size: 16px; /* Perfeito: evita o zoom automático do iOS ao focar */
-    border-radius: 5px;
-    border: 2px solid #858080;
-
-    -webkit-tap-highlight-color: transparent; 
-}
-
-#tg_film {
-    background-color: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    position: absolute;
-    top: 0;
-    left: 0;
+    background-color: var(--button-bg);
     width: 100%;
-    height: 100%;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-@keyframes dropAnim100 {
-    to {
-        top: 100vh;
-    }
+    max-width: 200px;
+    color: var(--text-color);
+    font-size: 16px;
+    border-radius: 5px;
+    border: 2px solid var(--border-color);
+    -webkit-tap-highlight-color: transparent;
 }
 
 #gameUI {
     display: flex;
-    flex-direction: column; 
-    gap: 15px; 
+    flex-direction: column;
+    gap: 15px;
     align-items: flex-end;
     position: absolute;
     top: 0;
@@ -123,48 +344,18 @@ body {
     pointer-events: none;
     padding: 20px;
     box-sizing: border-box;
-    color: white;
+    color: var(--text-color);
 }
 
-#comboUi {
-    display: none;
-}
-
-#button00 {
-    justify-content: center;
-    background-color: #000000;
-    padding: 10px 20px;
-    color: #ffffff;
-    font-size: 16px;
-    display: none;
-    cursor: pointer;
-    border-radius: 5px;
-    border: 2px solid #858080;
-    animation: pulsar 3s infinite;
-}
-
-@keyframes pulsar {
-    50% { opacity: 5%; }
-}
-
-#endScoreUi {
-    background-color: #000000;
-    padding: 10px 20px;
-    color: #ffffff;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    border: 2px solid #858080;
-}
+#comboUi { display: none; }
 
 h1 {
     top: 0;
     left: 0;
     width: 200px;
     text-align: center;
-    color: #fff;
+    color: var(--text-color);
     margin-top: -20%;
-    background-color: #000000;
     padding: 0px 20px;
     font-size: 18px;
 }
@@ -186,258 +377,14 @@ h1 {
 }
 
 #middleDiv {
-    flex-direction: column !important; 
+    flex-direction: column !important;
     gap: 15px;
     display: none;
-}
-#middleDiv #newGameButton{
-    animation: pulsar 0.9s infinite;
-}
-
-button {
-    /* 1. Desativa o estilo nativo de botões do iOS/Safari */
-    -webkit-appearance: none;
-    appearance: none;
-
-    /* 2. Garante que padding e borda fiquem DENTRO da largura estipulada */
-    box-sizing: border-box;
-
-    background-color: #000000;
-    padding: 12px 20px; /* 12px melhora o toque com o dedo no celular */
-    
-    /* 3. LARGURA RESPONSIVA: */
-    width: 100%;          /* Ocupa a largura total do container no celular... */
-    max-width: 200px;     /* ...mas nunca passa de 200px em telas maiores */
-
-    color: #ffffff;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    border: 2px solid #858080;
-
-    /* 4. Melhora a experiência de toque no Mobile */
-    -webkit-tap-highlight-color: transparent; /* Remove o quadrado cinza ao tocar */
-    touch-action: manipulation;              /* Impede zoom acidental no duplo toque */
-}
-
-#ranking {
-    box-sizing: border-box; /* 👈 ADICIONE ISSO */
-    width: 90%;
-    height: 80%;
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #ffffff;
-    border: 2px solid #858080;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 80px;
-    display: none;
-    text-align: center;
-    font-family: sans-serif;
-    padding: 20px;
-}
-
-/* Código padrão para computadores (Sem nenhuma barra de scroll) */
-#rankingCapsule {
-    width: 100%;
-    margin-top: 10px;
-}
-
-.ranking-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.ranking-table th, 
-.ranking-table td {
-    padding: 12px 8px;
-    text-align: left;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* ==========================================
-   SÓ ATIVA OS SCROLLS SE A TELA FOR PEQUENA 
-   ========================================== */
-
-/* Se a LARGURA da janela for menor que 600px (Celular em pé) */
-@media (max-width: 1163px) {
-    #rankingCapsule { overflow-x: auto; } /* Ativa scroll horizontal */
-    .ranking-table { min-width: 500px; }  /* Impede a tabela de esmagar */
-}
-
-/* Se a ALTURA da janela for menor que 500px (Celular deitado / Telas muito baixas) */
-@media (max-height: 500px) {
-    #rankingCapsule { 
-        max-height: 600px;    /* Trava o tamanho do ranking */
-        overflow-y: auto;     /* Ativa o scroll vertical */
-    } 
-}
-
-#imageDiv {
-    width: 90%;
-    height: 80%;
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #ffffff;
-    border: 2px solid #858080;
-    margin-bottom: 80px;
-    display: none;
-}
-
-#jp_film {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 9999;
-
-    /* Transforma a película inteira em um centralizador universal */
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-#jp_capsule {
-    /* Ativa o flexbox para repassar a centralização para o container */
-    justify-content: center;
-    align-items: center;
-    
-    /* Controla o tamanho da caixinha na tela de forma responsiva */
-    width: 90%;
-    max-width: 380px; 
-    height: 50%;
-}
-
-#jp_container {
-    font-family: 'Times New Roman', Times, serif !important;
-    background-color: #000000;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    
-    width: 100%;
-    height: 100%;
-    padding: 30px 20px;
-    border-radius: 8px;
-    border: 1px solid #333333;
-    box-sizing: border-box;
-}
-
-
-#div_dificult, #div_playlist {
-    width: 100%;          /* Ocupa a largura total disponível no #jp_container */
-    max-width: 280px;     /* Altere este valor (ex: 240px, 300px) para controlar o tamanho exato */
-    flex-direction: column;
-    align-items: center;  /* Mantém o texto (P) e o Select centralizados entre si */
-    box-sizing: border-box;
-}
-
-/* Força os menus suspensos a acompanharem a largura definida acima */
-#div_dificult select, #div_playlist select {
-    width: 100%;          /* Ocupa 100% dos 280px definidos no elemento pai */
-    padding: 8px 12px;
-    box-sizing: border-box;
-    background-color: #000000;
-    color: #ffffff;
-
-}
-
-#jp_buttonsDiv {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;            /* Espaço fixo entre os dois botões */
-    justify-content: center;
-    width: 100%;          
-    max-width: 280px;     /* DEIXE IGUAL AO DO SELECT (ex: 280px) para alinhar perfeitamente */
-    box-sizing: border-box;
-}
-
-/* Os botões agora vão respeitar a largura máxima do bloco pai */
-#jp_container button {
-    flex: 1;              /* Faz os dois botões dividirem o espaço de 280px igualmente */
-    max-width: 130px;     /* Impede que fiquem grandes demais se a tela esticar */
-    padding: 8px 12px;  
-    font-size: 14px;    
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-#janela_Pref {
-    background-color: #000000;
-    color: #ffffff;
-    border-radius: 5px;
-    border: 2px solid #858080;
-    display: none;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-}
-
-.jp_element p {
-    color: #ffffff;
-    font-size: 0.85rem;
-    margin: 0 0 8px 0;
-    
-    /* --- MUDANÇAS AQUI --- */
-    text-align: left;    /* Alinha o texto para a esquerda */
-    width: 100%;         /* Ocupa a largura total para fixar o início na borda */
 }
 
 #colorSelect > div {
     display: flex;
     justify-content: space-between;
-}
-
-#janela_config {
-    display: none;
-}
-
-#cg_capsule {
-    /* Ativa o flexbox para repassar a centralização para o container */
-    justify-content: center;
-    align-items: center;
-    
-    /* Controla o tamanho da caixinha na tela de forma responsiva */
-    width: 90%;
-    max-width: 380px; 
-    height: 50%;
-}
-
-#cg_container {
-    background-color: #000000;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    
-    width: 100%;
-    height: 100%;
-    padding: 30px 20px;
-    border-radius: 8px;
-    border: 1px solid #333333;
-    box-sizing: border-box;
-}
-
-#cg_film {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 9999;
-
-    /* Transforma a película inteira em um centralizador universal */
-    justify-content: center !important;
-    align-items: center !important;
 }
 
 #cg_volumeDiv {
@@ -447,194 +394,23 @@ button {
     font-family: sans-serif;
 }
 
-/* Deixa o slider com tamanho bom e cor personalizada (opcional) */
 input[type="range"] {
     width: 150px;
     cursor: pointer;
-    accent-color: #ffffff; /* Cor da bolinha e barra */
-}
-
-#pr_capsule {
-    /* Ativa o flexbox para repassar a centralização para o container */
-    justify-content: center;
-    align-items: center;
-    
-    /* Controla o tamanho da caixinha na tela de forma responsiva */
-    width: 90%;
-    max-width: 380px; 
-    height: 50%;
-}
-
-#pr_container {
-    background-color: #000000;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    
-    width: 100%;
-    height: 100%;
-    padding: 30px 20px;
-    border-radius: 8px;
-    border: 1px solid #333333;
-    box-sizing: border-box;
-}
-
-#pr_film {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 9999;
-
-    /* Transforma a película inteira em um centralizador universal */
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-#gameBody {
-    background-color: #000000;
-    margin: 0;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#gameBody #gameDiv {
-    position: relative;
-    width: 80vw;
-    height: 80vh;
-    overflow: hidden;
-    border: 1px solid #333333;
-    box-sizing: border-box;
-}
-
-#gameBody #gameDiv .box-style{
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background-color: #070707;
-    color: white;
-    border: 1px solid #f7f8f7;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: sans-serif;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation-name: dropAnim80;
-    animation-timing-function: linear;
-    animation-fill-mode: forwards;
-    
-}
-
-@keyframes dropAnim80 {
-    to {
-        top: calc(100% - 30px);
-    }
+    accent-color: var(--text-color);
 }
 
 label {
     font-size: 14px;
     font-family: sans-serif;
     font-weight: bold;
-    background-color: #070707;
-    color: white;
+    color: var(--text-color);
 }
 
-#jm_film {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 9999;
-
-    /* Transforma a película inteira em um centralizador universal */
-    justify-content: center !important;
-    align-items: center !important;
-}
-
-#jm_capsule {
-    /* Ativa o flexbox para repassar a centralização para o container */
-    justify-content: center;
-    align-items: center;
-    
-    /* Controla o tamanho da caixinha na tela de forma responsiva */
-    width: 90%;
-    max-width: 380px; 
-    height: 50%;
-}
-
-#jm_container {
-    font-family: 'Times New Roman', Times, serif !important;
-    background-color: #000000;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    
-    width: 100%;
-    height: 100%;
-    padding: 30px 20px;
-    border-radius: 8px;
-    border: 1px solid #333333;
-    box-sizing: border-box;
-}
-
-#jm_buttonsDiv {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;            /* Espaço fixo entre os dois botões */
-    justify-content: center;
-    width: 100%;          
-    max-width: 280px;     /* DEIXE IGUAL AO DO SELECT (ex: 280px) para alinhar perfeitamente */
-    box-sizing: border-box;
-}
-
-/* Os botões agora vão respeitar a largura máxima do bloco pai */
-#jm_container button {
-    flex: 1;              /* Faz os dois botões dividirem o espaço de 280px igualmente */
-    max-width: 130px;     /* Impede que fiquem grandes demais se a tela esticar */
-    padding: 8px 12px;  
-    font-size: 14px;    
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-#janela_makePlaylist {
-    background-color: #000000;
-    color: #ffffff;
-    border-radius: 5px;
-    border: 2px solid #858080;
-    display: none;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-}
-
-.jm_element p {
-    color: #ffffff;
-    font-size: 0.85rem;
-    margin: 0 0 8px 0;
-    
-    /* --- MUDANÇAS AQUI --- */
-    text-align: left;    /* Alinha o texto para a esquerda */
-    width: 100%;         /* Ocupa a largura total para fixar o início na borda */
+* {
+    text-shadow: 
+        -1px -1px 0 var(--shadowText),  
+         1px -1px 0 var(--shadowText),
+        -1px  1px 0 var(--shadowText),
+         1px  1px 0 var(--shadowText);
 }

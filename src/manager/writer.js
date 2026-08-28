@@ -146,8 +146,13 @@ export function createLocals(){
         {efectVolume:0.6},
         {uiMusicName:"default"}];
 
-    let paleta = {paletName:"default"};
-
+    let styleColor = {
+        'bg-color': '#000000',
+        'text-color': '#ffffff',
+        'border-color': '#858080',
+        'button-bg': '#000000'
+    }
+    
     let preferences = [
         {dificuldade:"FACIL"},
         {playlist:"default"}]
@@ -155,7 +160,7 @@ export function createLocals(){
     let registro = [{nickName: "guest"}, {score: "0"}, {ts: "0/s"}, {time: "0/s"}]
 
     writerLocal("create","config",config)
-    writerLocal("create","paleta",paleta)
+    writerLocal("create","styleColor",styleColor)
     writerLocal("create","preferences",preferences)
     writerLocal("create","register",registro)
 }
