@@ -12,6 +12,7 @@ const gameDiv = document.getElementById("gameDiv")
 
 const audioElement = document.getElementById('player')
 const musicVolElement = document.getElementById('musicVolume')
+const dif_inicial = 126;
 
 let isPaused = false
 
@@ -58,7 +59,7 @@ function gamePause() {
 async function inicializar() {
     // Inicia o sistema que limpa as letras da tela
     observer("game");
-    theConstrutor("game",10,120)
+    theConstrutor("game",dif_inicial)
     
     /*Atualizando elementos da janela config */
     let volumeAtual = readLocal("tag","musicVolume")

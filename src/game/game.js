@@ -9,6 +9,9 @@ const elementLife = document.querySelector('.hud-item #life_points')
 const elementScore = document.querySelector('.hud-item #score')
 const elementCombo = document.querySelector('.hud-item #combo')
 const elementGameDiv = document.querySelector('#gameDiv')
+const elementDif = document.querySelector('.hud-item #dificult_number')
+const elementTs = document.querySelector('.hud-item #ts')
+const elementTime = document.querySelector('.hud-item #time')
 export let observerLoop; /*ID do Loop Observer*/
 
 let life = 100
@@ -17,6 +20,9 @@ let score = 0
 let prefs = readLocal("key","preferences")
 let namecache = readLocal("tag",'nickName')
 let styleColor = readLocal("key","styleColor")
+let velocity = 120;
+let dificultNumber, windowValue, windowVerify;
+let difInit, difAdd, dificultInit;
 
 changeStyleColor(styleColor);
 
@@ -33,8 +39,6 @@ let types = 0;
 let timeStart = Date.now(); 
 let reStatus = false /* Se registrado muda pra true */
 
-
-
 switch (dificult) {
     case "FACIL":
         life = 100;
@@ -50,8 +54,7 @@ switch (dificult) {
         break
 } 
 
-export function theConstrutor(mode,dificultNumber,velocity){
-    let dificult = dificultNumber
+export function theConstrutor(mode,dif){
     let construtor = true
     /*CAPTURA A DIV ONDE AS LETRAS SERAO CRIADAS*/
     const container = document.getElementById('gameDiv');
@@ -63,6 +66,28 @@ export function theConstrutor(mode,dificultNumber,velocity){
     const height_background = mode === "game" ? container.clientHeight : window.innerHeight;
     let loteinGame = document.querySelectorAll('.box-style');
 
+    if (mode == "game") {
+        if (dificultNumber == undefined) { // inicia o valor da variavel dificultNumber.
+            dificultNumber = windowDif(dif);
+            dificultInit = windowDif(dif);
+            windowValue = elementGameDiv.clientWidth;
+            windowVerify = elementGameDiv.clientWidth;
+            difInit = dif;
+            
+        }
+        if (windowValue != undefined) {
+            if (windowValue != windowVerify) { // se o tamanho da janela for alterado, recalcula a dif.
+                difAdd = dificultNumber - dificultInit;
+                dificultNumber = windowDif(difInit) + difAdd;
+                console.log("difn",dificultNumber)
+                windowValue = windowVerify;
+                console.log("tela alterada")
+            }
+        }
+    }else {
+        dificultNumber = 26;
+    }
+    
     /*BLOCO QUE VERIFICA SE JA EXISTE LETRAS EM TELA */
     if (loteinGame.length == 0){
         construtor = true
@@ -130,12 +155,7 @@ export function theConstrutor(mode,dificultNumber,velocity){
         loteinGame = document.querySelectorAll('.box-style');
 
     }
-
-    let var_Atualizadas = [10,120];
-    if (mode === "game") {
-        var_Atualizadas = newDificult(dificult,velocity_pxS,score);
-    }
-    requestAnimationFrame(() => theConstrutor(mode,var_Atualizadas[0], var_Atualizadas[1]));
+    requestAnimationFrame(() => theConstrutor(mode,dificultNumber));
 };
 
 /*FUNCAO PARA CRIAR UMA ARRAY COM OBJETOS COORDENADAS*/
@@ -156,7 +176,7 @@ function generate_spawnMap(mode){
     
     for (let c = 0; c <= contSpacesX; c++){
         let sortX = offset + (c * 36)
-        for (let r = 1; r <= contSpacesX; r++){
+        for (let r = 1; r <= contSpacesY; r++){
             let sortY = (r * 36)*-1
             let position = {"x":sortX,"y":sortY}
             positions.push(position)
@@ -172,7 +192,7 @@ export function observer(mode) {
             console.warn("func observer [Trava de segurança ativada! O observer desativado.]");
             return;
         }
-        elementLife.innerText = life;
+        uiUpdate();
     }
     // 2. Medição da borda inferior exata no monitor (rodada apenas 1 vez)
     const gameDivRect = elementGameDiv.getBoundingClientRect();
@@ -180,7 +200,6 @@ export function observer(mode) {
 
     let loteinGame = document.querySelectorAll('.box-style');
     let list = [];
-    
 
     for (let i = 0; i < loteinGame.length; i++) {
         let item = loteinGame[i];
@@ -197,7 +216,14 @@ export function observer(mode) {
             if (mode === "game") {
                 item.remove();
                 life--;
-                elementLife.innerText = life;
+                uiUpdate();
+            }else{
+                try{
+                    const contador = document.getElementById('contador')
+                    contador.textContent = loteinGame.length
+                }catch (e){
+                    console.log(`contador: [${e}]`)
+                }
             }
             if (life <= 0 && mode === "game") {
                 elementEndScore.innerText = score;
@@ -231,36 +257,57 @@ export function destroyer(key,list) {
     target.item.remove();
     if (reStatus === false) {
         types++
-        elementScore.innerText = score++
+        score++
+        uiUpdate();
     }
+    dificultNumber = newDificult(dificultNumber,score);
 }
 
 /* Função para regular a dificuldade ao longo do jogo - FACIL / NORMAL */
-export function newDificult(dif,vpx,sco) { /*dificuldade, velocidade px/s, score atual*/
+let verificador;
+export function newDificult(dif,sco) { /*dificuldade, velocidade px/s, score atual*/
+    let valor;
+
     dif = parseInt(dif,10);
-    vpx = parseInt(vpx,10);
     sco = parseInt(sco,10);
 
-    let valor = 0;
-    let dificulLimit = 100;
-    let scoreLimit = 500;
-    if (sco === 0 || sco == null){
-        return [10, 120]
-    }
-    else if (sco >= 50 && sco < scoreLimit) {
-        let difRestante = dificulLimit - dif;
-        let scoRestante = scoreLimit - sco;
-        if (scoRestante > 0 && difRestante > 0) {
-            valor = difRestante / scoRestante; 
+    if (sco > 0){
+        if (verificador != sco) {
+            valor = sco/72
+            dif = dif + valor
+            console.log("valor",valor,"dif",dif,"score",sco)
+            verificador = sco;
         }
     }
-    else if (sco >= scoreLimit) {
-        valor = 0
+
+    return dif;
+}
+
+function windowDif (valor) {
+    let containerWidth = elementGameDiv.clientWidth;
+    let dificult = containerWidth/valor
+    console.log(`${valor} / ${containerWidth} = ${dificult}`)
+    return dificult;
+}
+
+function uiUpdate (){
+    let interval = (Date.now())-timeStart;
+    let isTime = (interval/1000);
+    let ts;
+
+    if (types > 0) {
+        ts = Math.floor((isTime/types)*10)/10; /* Aredondando para 1 casa dec */
+        ts = `${ts}/s`
     }
-    dif = dif + valor;
-    vpx = vpx + valor;
-    //console.log(valor," dificuldade atualizada ",dif,"dif // ",vpx,"pxs");
-    return [dif, vpx];
+    else{ts = `0/s`}
+
+    elementLife.innerText = life;
+    elementScore.innerText = score;
+    elementDif.innerText = (dificultNumber ?? 0).toFixed(2);
+    elementTs.innerText = ts;
+    elementTime.innerText = isTime;
+
+    windowVerify = elementGameDiv.clientWidth;
 }
 
 function rankRegister() {

@@ -19,20 +19,27 @@
 <body id="gameBody">
     
     <audio id="player"></audio>
-    
-    <div class="divs" id="gameDiv">
-        <!-- As letras vão nascer aqui dentro -->
-    </div>
 
-    <div class="divs" id="tg_film">
-        <h1 id="endScoreUi">Score: <span id="endScore">0</span></h1>
-        <button Id="cg_buttonReload2" className="button">Reiniciar Jogo</button>
-        <button id="click">Voltar Ao Inicio</button>
+    <div>
+        <div class="divs" id="gameDiv">
+            <!-- As letras vão nascer aqui dentro -->
+        </div>
+
+        <div class="divs" id="tg_film">
+            <h1 id="endScoreUi">Score: <span id="endScore">0</span></h1>
+            <button Id="cg_buttonReload2" className="button">Reiniciar Jogo</button>
+            <button id="click">Voltar Ao Inicio</button>
+        </div>
+        <div class="divs" id="gameUI">
+            <div class="hud-item" id="lifeUi">Life: <span id="life_points">0</span></div>
+            <div class="hud-item" id="scoreUi">Score: <span id="score">0</span></div>
+            <div class="hud-item" id="comboUi">Combo <span id="combo">0x</span></div>
+        </div>
     </div>
-    <div class="divs" id="gameUI">
-        <div class="hud-item" id="lifeUi">Life: <span id="life_points">0</span></div>
-        <div class="hud-item" id="scoreUi">Score: <span id="score">0</span></div>
-        <div class="hud-item" id="comboUi">Combo <span id="combo">0x</span></div>
+    <div class="divs" id="gameStats">
+        <div class="hud-item" id="difUi">dif: <span id="dificult_number">0</span></div>
+        <div class="hud-item" id="tsUi">t/s: <span id="ts">0</span></div>
+        <div class="hud-item" id="timeUi">time: <span id="time">0</span></div>
     </div>
     <!-- Janela config -->
         <div id="janela_config" class="windowDiv">
@@ -57,4 +64,4 @@
     <script type="module" src="./app.js"></script>
 
 </body>
-</html>
+</html>>

@@ -50,7 +50,7 @@ const prPaletteButton = document.getElementById("paletaButtons")
 const prPaletteText = document.getElementById("paletaText")
 const buttonPlay = document.getElementById("play_button"); /* PREFS */
 
-//* Area de variaveis de temporarias *//
+//* Area de variaveis de temporarias *// 
 
 let clicked = false;
 
@@ -184,7 +184,7 @@ function janelaPerso(command){
 
 function gameINbackground() {
     if (!clicked) {
-        theConstrutor("static",26,150);
+        theConstrutor("static");
     }
 }
 

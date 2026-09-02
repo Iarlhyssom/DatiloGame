@@ -139,7 +139,7 @@ export function writerLocal(command,key,value){
     }
     else {console.log(`func writerLocal [comando desconhecido] command '${command}'`)}
 }
-
+ 
 export function createLocals(){
     let config = [
         {musicVolume:0.6},
@@ -150,7 +150,8 @@ export function createLocals(){
         'bg-color': '#000000',
         'text-color': '#ffffff',
         'border-color': '#858080',
-        'button-bg': '#000000'
+        'button-bg': '#000000',
+        'shadowText': '#000000'
     }
     
     let preferences = [
