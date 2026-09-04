@@ -1,18 +1,24 @@
+const dbVersion = 3;
+
 /**
  * Abre (ou cria) a conexão com o banco IndexedDB.
  * Se a tabela estiver vazia, aciona a função de inicialização se fornecida.
  */
-export function abrirBanco(NOME_BANCO, VERSAO, TABELA, funcInit) {
+export function abrirBanco(NOME_BANCO, TABELA, funcInit) {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(NOME_BANCO, VERSAO);
+        const request = indexedDB.open(NOME_BANCO, dbVersion);
 
         // CONDICIONAL DE ESTRUTURA: Dispara quando o banco é novo ou a versão aumentou
         request.onupgradeneeded = (evento) => {
             const db = evento.target.result;
-            // Se a tabela requisitada não existir no banco, ela é criada com a chave 'id'
-            if (!db.objectStoreNames.contains(TABELA)) {
-                db.createObjectStore(TABELA, { keyPath: "id" });
-            }
+            
+            // Garante a criação de todas as tabelas do sistema na inicialização/upgrade
+            const tabelasConhecidas = ["ranking", "playlists"];
+            tabelasConhecidas.forEach(nomeTabela => {
+                if (!db.objectStoreNames.contains(nomeTabela)) {
+                    db.createObjectStore(nomeTabela, { keyPath: "id" });
+                }
+            });
         }; 
 
         // Dispara quando o banco abre com sucesso
@@ -40,8 +46,8 @@ export function abrirBanco(NOME_BANCO, VERSAO, TABELA, funcInit) {
 /**
  * Adiciona um objeto novo na tabela.
  */
-export async function addInDB(NOME_BANCO, VERSAO, TABELA, ITEM) {
-    const db = await abrirBanco(NOME_BANCO, VERSAO, TABELA);
+export async function addInDB(NOME_BANCO, TABELA, ITEM) {
+    const db = await abrirBanco(NOME_BANCO, TABELA);
     return new Promise((resolve, reject) => {
         const transacao = db.transaction(TABELA, 'readwrite');
         const store = transacao.objectStore(TABELA);
@@ -55,8 +61,8 @@ export async function addInDB(NOME_BANCO, VERSAO, TABELA, ITEM) {
 /**
  * Remove um registro completo da tabela usando a chave primária (Key/ID).
  */
-export async function deleteDBKey(NOME_BANCO, VERSAO, TABELA, Key) {
-    const db = await abrirBanco(NOME_BANCO, VERSAO, TABELA);
+export async function deleteDBKey(NOME_BANCO, TABELA, Key) {
+    const db = await abrirBanco(NOME_BANCO, TABELA);
     return new Promise((resolve, reject) => {
         const transacao = db.transaction(TABELA, 'readwrite');
         const store = transacao.objectStore(TABELA);
@@ -70,8 +76,8 @@ export async function deleteDBKey(NOME_BANCO, VERSAO, TABELA, Key) {
 /**
  * Remove um elemento de dentro de um array interno guardado no registro.
  */
-export async function deleteDBValue(NOME_BANCO, VERSAO, TABELA, Key, NOME_ARRAY, CAMPO_ID_INTERNO, REF) {
-    const db = await abrirBanco(NOME_BANCO, VERSAO, TABELA);
+export async function deleteDBValue(NOME_BANCO, TABELA, Key, NOME_ARRAY, CAMPO_ID_INTERNO, REF) {
+    const db = await abrirBanco(NOME_BANCO, TABELA);
     return new Promise((resolve, reject) => {
         const transacao = db.transaction(TABELA, 'readwrite');
         const store = transacao.objectStore(TABELA);
@@ -103,8 +109,8 @@ export async function deleteDBValue(NOME_BANCO, VERSAO, TABELA, Key, NOME_ARRAY,
 /**
  * Insere um novo item ao final de um array interno de um registro.
  */
-export async function addDBValue(NOME_BANCO, VERSAO, TABELA, Key, NOME_ARRAY, NOVO_ITEM) {
-    const db = await abrirBanco(NOME_BANCO, VERSAO, TABELA);
+export async function addDBValue(NOME_BANCO, TABELA, Key, NOME_ARRAY, NOVO_ITEM) {
+    const db = await abrirBanco(NOME_BANCO, TABELA);
     return new Promise((resolve, reject) => {
         const transacao = db.transaction(TABELA, 'readwrite');
         const store = transacao.objectStore(TABELA);
@@ -150,7 +156,7 @@ export async function addRanking(REGISTER) {
     const banco = 'datiloDB';
     const table = 'ranking';
     const chave = 'rankinglist';
-    const db = await abrirBanco(banco, 1, table, initRanking);
+    const db = await abrirBanco(banco, table, initRanking);
 
     return new Promise((resolve, reject) => {
         const trade = db.transaction(table, 'readwrite');
@@ -194,7 +200,7 @@ export async function readRanking() {
     const banco = 'datiloDB';
     const table = 'ranking';
     const chave = 'rankinglist';
-    const db = await abrirBanco(banco, 1, table, initRanking);
+    const db = await abrirBanco(banco, table, initRanking);
 
     return new Promise((resolve, reject) => {
         const trade = db.transaction(table, 'readonly');
@@ -205,6 +211,55 @@ export async function readRanking() {
             const object = evento.target.result;
             // CONDICIONAL TERNÁRIA: Retorna a lista 'register' se ela existir, senão devolve um array vazio
             resolve(object && object.register ? object.register : []);
+        };
+
+        requisicaoBusca.onerror = (e) => reject(e.target.error);
+    });
+}
+
+/**
+ * Cria a estrutura inicial adicionando a primeira playlist diretamente como um registro caso a tabela seja nova.
+ */
+
+/**
+ * Cadastra uma nova playlist como um registro individual na tabela 'playlists'.
+ */
+export async function addPlaylist(NOVA_PLAYLIST) {
+    const banco = 'datiloDB';
+    const table = 'playlists';
+
+    const db = await abrirBanco(banco, table);
+
+    return new Promise((resolve, reject) => {
+        const trade = db.transaction(table, 'readwrite');
+        const store = trade.objectStore(table);
+        
+        // Insere o objeto da playlist diretamente como uma nova chave/registro
+        const request = store.add(NOVA_PLAYLIST);
+
+        request.onsuccess = () => resolve(true);
+        request.onerror = (e) => reject(e.target.error);
+    });
+}
+
+/**
+ * Lê e retorna todas as playlists cadastradas como registros individuais no banco de dados.
+ */
+export async function readPlaylists() {
+    const banco = 'datiloDB';
+    const table = 'playlists';
+
+    const db = await abrirBanco(banco, table);
+
+    return new Promise((resolve, reject) => {
+        const trade = db.transaction(table, 'readonly');
+        const store = trade.objectStore(table);
+        
+        // Busca todos os registros individuais da tabela de uma só vez
+        const requisicaoBusca = store.getAll();
+
+        requisicaoBusca.onsuccess = (evento) => {
+            resolve(evento.target.result || []);
         };
 
         requisicaoBusca.onerror = (e) => reject(e.target.error);

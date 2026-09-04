@@ -3,7 +3,7 @@ import { observer, observerLoop, isVisibleList, theConstrutor } from "../game/ga
 import { writerLocal, readLocal } from "./writer.js"
 import { uiPlayer} from "../music/player.js";
 import { changeStyleColor } from "./functions.js";
-import { readRanking } from "./dbManager.js";
+import { readRanking, abrirBanco, initRanking, readPlaylists, addPlaylist } from "./dbManager.js";
 
 //* Area de variaveis de elementos *//
 const bodyArray = document.getElementsByClassName("windowDiv") /* Array com as Janelas do Index */
@@ -32,7 +32,11 @@ const jmContainer = document.getElementById("janela_makePlaylist")
 const jmElements = document.getElementsByClassName("jm_element")
 const jmButtonSave = document.getElementById("jm_buttonSave")
 const jmButtonCancel = document.getElementById("jm_buttonCancel")
-
+const jmAddMusicButton = document.getElementById("addMusicButton")
+const jmInputMusic = document.getElementById("inputMusic")
+const jmMusicList = document.getElementById('musics-list');
+const jmPlaylistName = document.getElementById('inputListName');
+ 
 const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
 const cgButtonSave = document.getElementById("cg_buttonSave")
@@ -52,9 +56,10 @@ const buttonPlay = document.getElementById("play_button"); /* PREFS */
 
 //* Area de variaveis de temporarias *// 
 
-let clicked = false;
-
+let musicList = [];
+let playlistList = [];
 let styleColor = readLocal("key","styleColor")
+let playlist = {playlist:"default"}
 
 //* Area das Funcoes *//
 
@@ -73,34 +78,29 @@ function showElements(elements/*Array*/) {
 function janelaInicial(command){
     if (command === "show") {
         showElements(jiElements);
-        jiContainer.style.display = "flex"
+        jiContainer.style.display = "flex";
 
-        setInterval(gameINbackground, 999);
-        observer('static')
+        theConstrutor("static");
+        observer('static');
 
-        // Listeners de entrada única (removem a si mesmos após o primeiro uso)
+        // Listeners de entrada única
         jiContainer.addEventListener('click', function catchMouse(event) {
-            toggleGame()
-            janelaInicial("hide")
-            janelaHome("show")
-            uiPlayer("play",uiMusicselect[0]["uiMusicName"])
+            janelaInicial("hide");
+            janelaHome("show");
+            uiPlayer("play",uiMusicselect[0]["uiMusicName"]);
             jiContainer.removeEventListener('click', catchMouse);
         });
         document.addEventListener('keydown', function catchAll(event) {
-            toggleGame()
-            janelaInicial("hide")
-            janelaHome("show")
-            uiPlayer("play",uiMusicselect[0]["uiMusicName"])
+            janelaInicial("hide");
+            janelaHome("show");
+            uiPlayer("play",uiMusicselect[0]["uiMusicName"]);
             document.removeEventListener('keydown', catchAll);
         });
     }
     else if (command === "hide") {
         hideElements(jiElements);
-        jiContainer.style.display = "none"
-        cancelAnimationFrame(observerLoop)
-    }
-    else {
-        console.log(`func janelaInicial >> commando string ${command} desconhecido`)
+        jiContainer.style.display = "none";
+        cancelAnimationFrame(observerLoop); // para o loop das letras.
     }
 }
 
@@ -122,7 +122,7 @@ function janelaPref(command){
     if (command === "show") {
         jpContainer.style.display = "flex"
         jpContainer.style.zIndex = "99"
-        let janelaDefault = [{dificuldade:'FACIL'},{playlist:'default'}];
+        let janelaDefault = [{dificuldade:'FACIL'}];
 
         writerLocal('update',"preferences",janelaDefault);
         showElements(jpElements);
@@ -142,8 +142,10 @@ function janelaMakePlaylist(command){
         jmContainer.style.display = "flex"
         jmContainer.style.zIndex = "99"
         showElements(jmElements);
+        musicList = [];
     }
     else if (command === "hide") {
+        musicList = [];
         hideElements(jmElements);
         jmContainer.style.display = "none"
     }
@@ -182,28 +184,56 @@ function janelaPerso(command){
     }
 }
 
-function gameINbackground() {
-    if (!clicked) {
-        theConstrutor("static");
-    }
-}
-
-function toggleGame() {
-    clicked = !clicked;
-}
-
 async function carregarRanking(){
     try{
+        const db = await abrirBanco('datiloDB', "ranking", initRanking);
         const ranking = await readRanking()
-        console.log(ranking)
         for (let i = 0; i < ranking.length; i++){
             jhrankTable.querySelector(`#rank${i}`).cells[1].textContent = ranking[i]['nome']
             jhrankTable.querySelector(`#rank${i}`).cells[2].textContent = ranking[i]['score']
             jhrankTable.querySelector(`#rank${i}`).cells[3].textContent = ranking[i]['ts']
             jhrankTable.querySelector(`#rank${i}`).cells[4].textContent = ranking[i]['time']
         }
-    } catch {
-        console.warn('erro ao carregar o Ranking.')
+    } catch (e) {
+        console.warn('erro ao carregar o Ranking.',e)
+    }
+}
+
+async function carregarPlaylists(){
+    try{
+        let defaultOption = document.createElement('option');
+        let addOption = document.createElement('option');
+        defaultOption.textContent = 'PLAYLIST PADRAO';
+        addOption.textContent = '-- ADICIONAR PLAYLIST --';
+        jpPlaylistSelect.textContent = "";
+
+        let playlists = await readPlaylists();
+
+        if (playlists.length > 0) {
+            for (let i = 0; i < playlists.length; i++) {
+                let newOption = document.createElement('option')
+                newOption.textContent = playlists[i]['id']
+                jpPlaylistSelect.appendChild(newOption);
+                playlistList.push(playlists[i])
+            }
+
+            // trecho para organizar as options do select
+            const optionsArray = Array.from(jpPlaylistSelect.options);
+            optionsArray.sort((a, b) => a.text.localeCompare(b.text));
+            jpPlaylistSelect.innerHTML = '';
+            jpPlaylistSelect.appendChild(defaultOption);
+            optionsArray.forEach(option => jpPlaylistSelect.appendChild(option));
+            jpPlaylistSelect.appendChild(addOption);
+            jpPlaylistSelect.selectedIndex = 0;
+
+        } else {
+            jpPlaylistSelect.appendChild(defaultOption);
+            jpPlaylistSelect.appendChild(addOption);
+        }
+        
+        
+    } catch (e) {
+        console.warn('erro ao carregar as playlists.',e)
     }
 }
 
@@ -229,10 +259,13 @@ jhButton02.addEventListener('click', function() { janelaConfig("show"); });
 
 // --- CLIQUES DA JANELA PREF ---
 jpButtonPlay.addEventListener('click', function() {
+    let nickname = [{nickName:jhNickName.value}];
+    
     janelaPref("hide");
     janelaHome("hide");
-    let nickname = [{nickName:jhNickName.value}];
+    
     writerLocal('update','register',nickname);
+    
     window.location.replace('./src/game/');
 });
 
@@ -247,15 +280,53 @@ jpDifSelect.addEventListener('change', function(event) {
 
 jpPlaylistSelect.addEventListener('change', function(event) {
     let select = event.target.value;
+    let thePlaylist = [{playlist: select}]
+    console.log(playlist)
+
+    writerLocal('update','preferences',thePlaylist);
+
     if (select === '-- ADICIONAR PLAYLIST --') {
+        jpPlaylistSelect.selectedIndex = 0;
         jpContainer.style.zIndex = "98";
         janelaMakePlaylist('show');
     }
 });
 
 // --- CLIQUES DA JANELA MAKE PLAYLIST ---
+
+jmAddMusicButton.addEventListener('click', function() {
+    jmInputMusic.click();
+});
+
+jmInputMusic.addEventListener('change', function() {
+    const newLabel = document.createElement('label');
+    let musicName = jmInputMusic.files[0].name
+
+    musicList.push(jmInputMusic.files[0])
+    musicName = (musicName.slice(0,38)) + ("...");
+    newLabel.textContent = `${musicName}`
+    jmMusicList.appendChild(newLabel);
+    console.log(musicName)
+});
+
 jmButtonSave.addEventListener('click', function() {
-    // Código para salvar futura playlist
+    let listName = jmPlaylistName.value
+    if (listName == undefined || listName == "" || listName.trim() == "") {
+        console.log("insira um nome para a playlist",`[${listName}]`)
+        // aqui deve sinalizar o campo de input do nome.
+    } 
+    else if (musicList.length > 0){
+        let registro = { 
+        id: listName, 
+        musicas: musicList 
+        };
+        addPlaylist(registro);
+    } else {
+        console.log("insira uma musica ou mais.")
+    }
+    carregarPlaylists();
+    jpContainer.style.zIndex = "99";
+    janelaMakePlaylist("hide");
 });
 
 jmButtonCancel.addEventListener('click', function() {
@@ -342,3 +413,5 @@ changeStyleColor(styleColor);
 paletteUpdate();
 janelaInicial('show');
 let uiMusicselect = readLocal('tag',"uiMusicName");
+carregarPlaylists();
+

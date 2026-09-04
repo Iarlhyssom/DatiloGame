@@ -1,11 +1,13 @@
 lista para lembrar os bugs conhecidos.
 
 * janela do jogo nao salva a config volume.
-
+    * a variavel do volume no localstorage esta acumulando valores.
+    
 * um bug visual na janela config do game.
 
 * quando o jogador perde a musica continua tocando ate acabar a playlist. 
 
 * fato estetico, se o usuario decidir ultilizar a letra preta com fundo branco, o sombreamento deixa as letras meio borradas..
+
 
 !! os bugs nesta lista estao aqui para correção futura (para eu nao esquecer..) !!

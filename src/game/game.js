@@ -38,6 +38,7 @@ let name = namecache[0];
 let types = 0;
 let timeStart = Date.now(); 
 let reStatus = false /* Se registrado muda pra true */
+let construtor = true
 
 switch (dificult) {
     case "FACIL":
@@ -55,7 +56,6 @@ switch (dificult) {
 } 
 
 export function theConstrutor(mode,dif){
-    let construtor = true
     /*CAPTURA A DIV ONDE AS LETRAS SERAO CRIADAS*/
     const container = document.getElementById('gameDiv');
     /*STRING CONTENDO O ALFABETO*/
@@ -79,9 +79,7 @@ export function theConstrutor(mode,dif){
             if (windowValue != windowVerify) { // se o tamanho da janela for alterado, recalcula a dif.
                 difAdd = dificultNumber - dificultInit;
                 dificultNumber = windowDif(difInit) + difAdd;
-                console.log("difn",dificultNumber)
                 windowValue = windowVerify;
-                console.log("tela alterada")
             }
         }
     }else {
@@ -94,13 +92,7 @@ export function theConstrutor(mode,dif){
     }
     /*VERIFICA SE EXISTEM LETRAS NO SPAWN MAP*/
     else{
-        let lotecheck = []
-        for (let i = 0; i < loteinGame.length; i++){
-            let itemStyle = window.getComputedStyle(loteinGame[i])
-            let itemY = parseInt(itemStyle.top, 10);
-            lotecheck.push(itemY)
-        }
-        construtor = lotecheck.every(item => item > 0);
+        spawnVerify(loteinGame);
     }
 
     /*SO ATIVA SE NAO HOUVER LETRAS NO SPAWN MAP*/
@@ -155,7 +147,6 @@ export function theConstrutor(mode,dif){
         loteinGame = document.querySelectorAll('.box-style');
 
     }
-    requestAnimationFrame(() => theConstrutor(mode,dificultNumber));
 };
 
 /*FUNCAO PARA CRIAR UMA ARRAY COM OBJETOS COORDENADAS*/
@@ -200,6 +191,11 @@ export function observer(mode) {
 
     let loteinGame = document.querySelectorAll('.box-style');
     let list = [];
+    let spawnClear = spawnVerify(loteinGame);
+
+    if (spawnClear) {
+        theConstrutor(mode, dificultNumber)
+    }
 
     for (let i = 0; i < loteinGame.length; i++) {
         let item = loteinGame[i];
@@ -274,8 +270,7 @@ export function newDificult(dif,sco) { /*dificuldade, velocidade px/s, score atu
     if (sco > 0){
         if (verificador != sco) {
             valor = sco/72
-            dif = dif + valor
-            console.log("valor",valor,"dif",dif,"score",sco)
+            dif = dif + valor;
             verificador = sco;
         }
     }
@@ -283,10 +278,20 @@ export function newDificult(dif,sco) { /*dificuldade, velocidade px/s, score atu
     return dif;
 }
 
+function spawnVerify (list) {
+    let lotecheck = []
+        for (let i = 0; i < list.length; i++){
+            let itemStyle = window.getComputedStyle(list[i])
+            let itemY = parseInt(itemStyle.top, 10);
+            lotecheck.push(itemY)
+        }
+        construtor = lotecheck.every(item => item > 0);
+        return construtor;
+}
+
 function windowDif (valor) {
     let containerWidth = elementGameDiv.clientWidth;
     let dificult = containerWidth/valor
-    console.log(`${valor} / ${containerWidth} = ${dificult}`)
     return dificult;
 }
 
@@ -301,11 +306,13 @@ function uiUpdate (){
     }
     else{ts = `0/s`}
 
-    elementLife.innerText = life;
-    elementScore.innerText = score;
-    elementDif.innerText = (dificultNumber ?? 0).toFixed(2);
-    elementTs.innerText = ts;
-    elementTime.innerText = isTime;
+    if (reStatus == false) {
+        elementLife.innerText = life;
+        elementScore.innerText = score;
+        elementDif.innerText = (dificultNumber ?? 0).toFixed(2);
+        elementTs.innerText = ts;
+        elementTime.innerText = isTime;
+    }
 
     windowVerify = elementGameDiv.clientWidth;
 }
@@ -318,20 +325,24 @@ function rankRegister() {
     let reScore = {score:score};
     let isTime = (interval/1000);
     let reTs,reTime;
-    isTime = isTime.toFixed(1);
-
     let dateUTC = (new Date()).getTime()
     let isDate = dateUTC - dateUTC_br
     
     if (isTime > 59) {
         isTime = isTime / 60;
-        reTime = {time:`${isTime}/m`};
+        isTime = isTime.toFixed(1);
+        reTime = {time:`${isTime}/min`};
     }
     else if (isTime > 3600) {
         isTime = isTime / 3600;
+        isTime = isTime.toFixed(1);
         reTime = {time:`${isTime}/h`};
     }
-    else{reTime = {time:`${isTime}/s`};}
+    else {
+        isTime = isTime.toFixed(1);
+        reTime = {time:`${isTime}/s`};
+    }
+
 
     if (types > 0) {
         reTs = Math.floor((isTime/types)*10)/10; /* Aredondando para 1 casa dec */
@@ -346,6 +357,7 @@ function rankRegister() {
 
     register = {data:isDate, nome:namecache[0]['nickName'],
          score:reScore['score'], ts:reTs['ts'], time:reTime['time']};
+    uiUpdate();
     reStatus = true;
 
     addRanking(register);

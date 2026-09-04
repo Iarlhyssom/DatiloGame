@@ -1,6 +1,7 @@
 import { observer, destroyer, isVisibleList, theConstrutor, newDificult } from "./game.js";
 import { player, locateFile, defaultPlaylist } from "../music/player.js";
 import {writerLocal, readLocal} from "../manager/writer.js";
+import { readPlaylists } from "../manager/dbManager.js";
 
 const elementButton = document.querySelector('#tg_film #click')
 const cgContainer = document.getElementById("janela_config")
@@ -58,22 +59,39 @@ function gamePause() {
 //função para rodar o fluxo assíncrono
 async function inicializar() {
     // Inicia o sistema que limpa as letras da tela
-    observer("game");
+    
     theConstrutor("game",dif_inicial)
+    observer("game");
     
     /*Atualizando elementos da janela config */
     let volumeAtual = readLocal("tag","musicVolume")
     musicVolElement.value = volumeAtual[0]["musicVolume"]
 
     // Aguarda a playlist ser carregada do JSON antes de entregar ao player
-    const playlistReal = await locateFile(defaultPlaylist,'json');
+    const thePlaylist = readLocal('tag','playlist');
+    let playlistReal = await locateFile(defaultPlaylist,'json');
     
     // Inicia a música passando o array
-    player(playlistReal);
+    if (thePlaylist[0]['playlist'] == 'default' || !thePlaylist[0]['playlist']) {
+        player(playlistReal,true);
+    }
+    else {
+        let playlists = await readPlaylists();
+        try {
+            for (let i = 0; i < playlists.length; i++) {
+                if (playlists[i].id == thePlaylist[0]['playlist']) {
+                    player(playlists[i],true);
+                    break;
+                }
+            }
+        } catch {console.warn('erro ao definir a playlist')}
+    }
 }
 
 // Dá o pontapé inicial no jogo de forma automática
+
 inicializar();
+
 
 // Captura o teclado do jogador (Sua lógica original exata)
 document.addEventListener('keydown', function(clicked) {
@@ -102,8 +120,8 @@ cgButtonBack.addEventListener('click', function(event) {
 });
 
 musicVolElement.addEventListener('input', function(event){
-    let thisVolume = {musicVolume:event.target.value};
-    writerLocal('update','musicVolume',thisVolume)
+    let thisVolume = [{musicVolume:event.target.value}];
+    writerLocal('update','config',thisVolume);
     audioElement.volume = event.target.value;
 })
 

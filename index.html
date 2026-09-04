@@ -209,8 +209,6 @@
                     <div id="div_playlist" class="jp_element">
                         <P>ESCOLHA A PLAYLIST</P>
                         <select id="playlist_select">
-                            <option>PLAYLIST PADRAO</option>
-                            <option>-- ADICIONAR PLAYLIST --</option>
                         </select>
                     </div>
                     <div id="jp_buttonsDiv" class="jp_element">
@@ -229,14 +227,15 @@
                     <h1>CRIAÇÃO DE PLAYLIST</h1>
                     <div Id="div_playlistName" class="jm_element">
                         <p>Nome da Playlist</p>
-                        <input type="text">
+                        <input type="text" id="inputListName">
                     </div>
                     <div id="div_musics" class="jm_element">
                         <div id="musics-list" class="jm_element">
-                            <label class="musicNames">minha musica</label>
+                            <!-- aqui vão as musicas na criação -->
                         </div>
-                        <div class="jm_element">
-                            <input type="file" accept="audio/*">
+                        <div class="jm_element" id="addMusicDiv">
+                            <button id="addMusicButton">ADICIONAR MUSICA</button>
+                            <input type="file" accept="audio/*" id="inputMusic">
                         </div>
                     </div>
                     <div id="jm_buttonsDiv" class="jm_element">

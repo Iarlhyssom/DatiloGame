@@ -434,3 +434,12 @@ label {
         -1px  1px 0 var(--shadowText),
          1px  1px 0 var(--shadowText);
 }
+
+#addMusicDiv > #inputMusic {
+    display: none;
+}
+
+#musics-list {
+    display: flex;
+    flex-direction: column;
+}
