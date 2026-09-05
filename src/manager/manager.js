@@ -36,6 +36,7 @@ const jmAddMusicButton = document.getElementById("addMusicButton")
 const jmInputMusic = document.getElementById("inputMusic")
 const jmMusicList = document.getElementById('musics-list');
 const jmPlaylistName = document.getElementById('inputListName');
+const jmPlaylistnameDiv = document.getElementById('div_playlistName');
  
 const cgContainer = document.getElementById("janela_config")
 const cgElements = document.getElementsByClassName("cg_element")
@@ -106,6 +107,9 @@ function janelaInicial(command){
 
 function janelaHome(command){
     if (command === "show") {
+        let nameCache = readLocal("tag",'nickName') ?? [{nickName: 'guest'}];
+        jhNickName.value = nameCache[0]['nickName'];
+
         showElements(jhElements);
         jhContainer.style.display = "flex"
     }
@@ -137,6 +141,7 @@ function janelaPref(command){
 }
 
 function janelaMakePlaylist(command){
+  
     if (command === "show") {
         console.warn('show')
         jmContainer.style.display = "flex"
@@ -145,9 +150,18 @@ function janelaMakePlaylist(command){
         musicList = [];
     }
     else if (command === "hide") {
+        let inputWarn = document.getElementById('jm_input_warn')
         musicList = [];
         hideElements(jmElements);
         jmContainer.style.display = "none"
+
+        if (inputWarn){
+            inputWarn.remove();
+        }
+
+        jmPlaylistName.value = '';
+        jmMusicList.innerHTML = '';
+
     }
     else {
         console.log(`func janelaPref >> commando string ${command} desconhecido`)
@@ -237,6 +251,31 @@ async function carregarPlaylists(){
     }
 }
 
+function criarPlaylist(listName, musicList){
+    if (playlistList.length > 0){
+        for (let i = 0; i < playlistList.length; i++){
+            if (listName === playlistList[i]['id']){
+                console.warn('func criarPlaylist [Nome de playlist ja existente.]');
+                return "exname";
+            }
+        }
+    }
+    if (listName == undefined || listName == "" || listName.trim() == "") {
+        console.log("insira um nome para a playlist",`[${listName}]`)
+        return 'noname'
+    } 
+    else if (musicList.length > 0){
+        let registro = { 
+        id: listName, 
+        musicas: musicList 
+        };
+        addPlaylist(registro);
+    } else {
+        console.log("insira uma musica ou mais.")
+    }
+    return 'complete';
+};
+
 function saveColor (cor, variavel) {
     styleColor[variavel] = cor
 }
@@ -311,25 +350,35 @@ jmInputMusic.addEventListener('change', function() {
 
 jmButtonSave.addEventListener('click', function() {
     let listName = jmPlaylistName.value
-    if (listName == undefined || listName == "" || listName.trim() == "") {
-        console.log("insira um nome para a playlist",`[${listName}]`)
-        // aqui deve sinalizar o campo de input do nome.
-    } 
-    else if (musicList.length > 0){
-        let registro = { 
-        id: listName, 
-        musicas: musicList 
-        };
-        addPlaylist(registro);
-    } else {
-        console.log("insira uma musica ou mais.")
+    let create = criarPlaylist(listName, musicList);
+    if (create === 'complete') {
+        carregarPlaylists();
+        jpContainer.style.zIndex = "99";
+        janelaMakePlaylist("hide");
     }
-    carregarPlaylists();
-    jpContainer.style.zIndex = "99";
-    janelaMakePlaylist("hide");
+    else if (create === 'exname'){
+        const label = document.createElement('label')
+        label.style.color = 'red';
+        label.textContent = '** Nome indisponivel **'
+        label.id = 'jm_input_warn';
+        jmPlaylistnameDiv.appendChild(label)
+
+    }
+    else if (create === 'noname'){
+        const label = document.createElement('label')
+        label.style.color = 'red';
+        label.textContent = '** Campo Obrigatório **'
+        label.id = 'jm_input_warn';
+        jmPlaylistnameDiv.appendChild(label)
+    }
+    else {
+        console.warn('makeplaylist [erro ...]')
+    }
+    
 });
 
 jmButtonCancel.addEventListener('click', function() {
+    
     jpContainer.style.zIndex = "99";
     janelaMakePlaylist("hide");
 });

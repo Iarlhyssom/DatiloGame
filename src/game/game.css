@@ -193,12 +193,22 @@ body {
 }
 
 /* ================= JANELAS COMUNS ================= */
-#janela_Pref, #janela_makePlaylist, #janela_config {
+#janela_Pref, #janela_makePlaylist {
     display: none;
     background-color: var(--bg-color);
     color: var(--text-color);
     border-radius: 5px;
     border: 2px solid var(--border-color);
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+#janela_config {
+    position: absolute;
+    display: none;
     flex-direction: column;
     height: 100%;
     width: 100%;
@@ -317,6 +327,21 @@ button {
 }
 
 #nicknameDiv > input {
+    text-align: center;
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    background-color: var(--button-bg);
+    width: 100%;
+    max-width: 200px;
+    color: var(--text-color);
+    font-size: 16px;
+    border-radius: 5px;
+    border: 2px solid var(--border-color);
+    -webkit-tap-highlight-color: transparent;
+}
+
+#div_playlistName > input {
     text-align: center;
     -webkit-appearance: none;
     appearance: none;
