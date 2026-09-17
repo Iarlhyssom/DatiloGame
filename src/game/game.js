@@ -23,6 +23,7 @@ let styleColor = readLocal("key","styleColor")
 let velocity = 120;
 let dificultNumber, windowValue, windowVerify;
 let difInit, difAdd, dificultInit;
+let spaces;
 
 changeStyleColor(styleColor);
 
@@ -163,7 +164,8 @@ function generate_spawnMap(mode){
     let sobraLargura = containerWidth - (contSpacesX * boxSize["x"]);
     let offset = Math.floor(sobraLargura / 2);
 
-    
+    console.log(`x ${contSpacesX} y ${contSpacesY}`)
+    spaces = contSpacesX * contSpacesY
     
     for (let c = 0; c <= contSpacesX; c++){
         let sortX = offset + (c * 36)
@@ -260,19 +262,16 @@ export function destroyer(key,list) {
 }
 
 /* Função para regular a dificuldade ao longo do jogo - FACIL / NORMAL */
-let verificador;
 export function newDificult(dif,sco) { /*dificuldade, velocidade px/s, score atual*/
     let valor;
 
-    dif = parseInt(dif,10);
+    dif = parseFloat(dif,10);
     sco = parseInt(sco,10);
 
     if (sco > 0){
-        if (verificador != sco) {
-            valor = sco/72
+            valor = (spaces/4)/1000
             dif = dif + valor;
-            verificador = sco;
-        }
+            console.log(valor," ",dif)
     }
 
     return dif;
