@@ -1,4 +1,3 @@
-/* ================= VARIÁVEIS DE TEMA (PALETA DE CORES) ================= */
 :root {
     --bg-color: #000000;
     --text-color: #ffffff;
@@ -7,7 +6,6 @@
     --shadowText: #000000;
 }
 
-/* ================= ESTRUTURA BASE ================= */
 body, #gameBody {
     background-color: var(--bg-color);
     margin: 0;
@@ -36,7 +34,6 @@ body {
     box-sizing: border-box;
 }
 
-/* ================= ANIMAÇÕES E CAIXAS ================= */
 .box-style {
     position: absolute;
     width: 30px;
@@ -69,7 +66,6 @@ body {
 @keyframes dropAnim80 { to { top: calc(100% - 30px); } }
 @keyframes pulsar { 50% { opacity: 5%; } }
 
-/* ================= FILMES (OVERLAYS) ================= */
 #ji_film, #tg_film, #jp_film, #cg_film, #pr_film, #jm_film {
     position: absolute;
     top: 0;
@@ -101,16 +97,14 @@ body {
     z-index: 98;
 }
 
-/* ================= CÁPSULAS ================= */
 #jp_capsule, #cg_capsule, #pr_capsule, #jm_capsule {
     justify-content: center;
     align-items: center;
     width: 90%;
     max-width: 380px;
-    height: 50%;
+    height: auto;
 }
 
-/* ================= CONTAINERS ================= */
 #jp_container, #cg_container, #pr_container {
     font-family: 'Times New Roman', Times, serif !important;
     background-color: var(--bg-color);
@@ -153,10 +147,6 @@ body {
     border-color: var(--border-color);
 }
 
-
-
-
-/* ================= ELEMENTOS E FORMULÁRIOS ================= */
 .jp_element p, .jm_element p {
     color: var(--text-color);
     font-size: 0.85rem;
@@ -192,13 +182,21 @@ body {
     box-sizing: border-box;
 }
 
-/* ================= JANELAS COMUNS ================= */
-#janela_Pref, #janela_makePlaylist {
+#janela_Pref {
     display: none;
     background-color: var(--bg-color);
     color: var(--text-color);
     border-radius: 5px;
     border: 2px solid var(--border-color);
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+#janela_makePlaylist {
+    display: none;
     flex-direction: column;
     height: 100%;
     width: 100%;
@@ -216,7 +214,6 @@ body {
     align-items: center;
 }
 
-/* ================= INTERFACE E BOTÕES ================= */
 button, #button00, #endScoreUi {
     background-color: var(--button-bg);
     color: var(--text-color);
@@ -260,7 +257,6 @@ button {
     animation: pulsar 0.9s infinite;
 }
 
-/* ================= PAINÉIS LATERAIS E RANKING ================= */
 #ranking, #imageDiv {
     width: 90%;
     height: 80%;
@@ -309,7 +305,6 @@ button {
     }
 }
 
-/* ================= ELEMENTOS AVULSOS ================= */
 #contDiv { display: flex; }
 
 #contador {
@@ -395,14 +390,30 @@ button {
 #comboUi { display: none; }
 
 h1 {
-    top: 0;
-    left: 0;
-    width: 200px;
+    width: 100%;
     text-align: center;
     color: var(--text-color);
-    margin-top: -20%;
-    padding: 0px 20px;
+    margin: 0 0 10px 0;
+    padding: 0;
     font-size: 18px;
+    box-sizing: border-box;
+}
+
+#middleDiv #gameTitle {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    text-align: center !important;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+#cg_title, #pr_title {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    text-align: center !important;
+
 }
 
 #container {
@@ -425,6 +436,7 @@ h1 {
     flex-direction: column !important;
     gap: 15px;
     display: none;
+    align-items: center; /* Alterado: Centraliza os itens da coluna principal */
 }
 
 #colorSelect > div {

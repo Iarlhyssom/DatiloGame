@@ -24,6 +24,7 @@ let velocity = 120;
 let dificultNumber, windowValue, windowVerify;
 let difInit, difAdd, dificultInit;
 let spaces;
+let LyricValue = 1;
 
 changeStyleColor(styleColor);
 
@@ -44,15 +45,19 @@ let construtor = true
 switch (dificult) {
     case "FACIL":
         life = 100;
+        LyricValue = 1;
         break
     case "NORMAL":
         life = 50;
+        LyricValue = 2; 
         break
     case "DIFICIL":
         life = 10;
+        LyricValue = 4;
         break
     default :
-        life = 27;
+        life = 100;
+        LyricValue = 1;
         break
 } 
 
@@ -255,7 +260,7 @@ export function destroyer(key,list) {
     target.item.remove();
     if (reStatus === false) {
         types++
-        score++
+        score = score + LyricValue;
         uiUpdate();
     }
     dificultNumber = newDificult(dificultNumber,score);
